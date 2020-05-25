@@ -1,10 +1,13 @@
 package main
 
 import (
+    "auth/application"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+    app := &application.App{}
+
 	r := gin.Default()
 	r.GET("/test", Test)
 	r.Run(":8080")
