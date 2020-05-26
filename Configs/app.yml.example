@@ -1,7 +1,0 @@
-# Server
-port: 8080
-
-# DB
-dbname:
-dbuser:
-dbpassword:

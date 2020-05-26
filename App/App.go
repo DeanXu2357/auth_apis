@@ -1,7 +1,7 @@
 package App
 
-import "auth/Configs"
+import "auth/configs"
 
 type App struct {
-	Configs Configs.Configurations
+	Configs configs.Configurations
 }
