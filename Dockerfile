@@ -1,16 +1,15 @@
 FROM golang:1.14
 
-# RUN mkdir /app
-WORKDIR /app
+WORKDIR /go/src/app
 COPY . .
 
-RUN go mod tidy
-RUN go mod download
-
-RUN go build -o main .
+#RUN go get -d -v ./...
+#RUN go install -v ./...
 
 EXPOSE 8080
 
-ENTRYPOINT ["./main"]
+#ENTRYPOINT ["go", "build", "-mod", "vendor", "-o", "main"]
+RUN go build -mod vendor -o main
 
 CMD ["./main"]
+#ENTRYPOINT ["./main"]

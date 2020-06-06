@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "666:8080"
+    volumes:
+      - .:/go/src/app
 
   db:
     image: postgres:12
@@ -21,4 +23,5 @@ services:
     shm_size: 512mb
 
 volumes:
+  app_data:
   postgres_data:
