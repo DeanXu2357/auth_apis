@@ -9,8 +9,10 @@
         * success: http code (200), `{"status_code":"200", "msg":"success"}`
         * user not found: http code (400), `{"status_code":"4004", "msg":"user not found"}`
         * user already exists: http code (400), `{"status_code":"4009", "msg":"user already exists"}`
+        * user already exists, but not certificate yet: http code (400), `{"status_code":"40092", "msg":"user already exists, but not certificate yet"}`
     
 * Resend Registration
+    * memo : need to implement resend limitation 
     * method: POST
     * path: `{domain}/api/v1/register/resend`
     * json parameters: `{"email": "dean@example.com"}`
