@@ -39,3 +39,8 @@ func InitConfig() {
 		fmt.Printf("Unable to decode into struct, %v", err)
 	}
 }
+
+func GetConfigs() (configs *Configurations) {
+	 configs = Configs
+	 return
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	c "auth/configs"
+	a "auth/app"
 	"auth/routes"
 	"context"
 	"fmt"
@@ -13,8 +14,12 @@ import (
 	"time"
 )
 
+var application *a.Instance
+
 func init() {
 	c.InitConfig()
+	config := c.GetConfigs()
+	application = a.New(config)
 }
 
 func doAfterShutdown() {
@@ -22,10 +27,10 @@ func doAfterShutdown() {
 }
 
 func main() {
-	router := routes.InitRouter()
+	router := routes.InitRouter(application)
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%v", c.Configs.Server.Port),
+		Addr: fmt.Sprintf(":%v", application.Configs.Server.Port),
 		Handler: router,
 	}
 
