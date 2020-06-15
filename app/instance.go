@@ -1,13 +1,17 @@
 package app
 
-import "auth/configs"
+import (
+	"auth/configs"
+	"github.com/jinzhu/gorm"
+)
 
 type Instance struct {
 	Configs *configs.Configurations
+	Database *gorm.DB
 }
 
-func New(c *configs.Configurations) *Instance {
-	return &Instance{c}
+func New(c *configs.Configurations, d *gorm.DB) *Instance {
+	return &Instance{c, d}
 }
 
 func (i *Instance)GetConfig() *configs.Configurations {
