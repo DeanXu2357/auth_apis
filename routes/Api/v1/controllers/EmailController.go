@@ -1,6 +1,9 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
 type registerByMailInput struct {
 	Name string `json:"name" binding:"required"`
@@ -9,7 +12,11 @@ type registerByMailInput struct {
 }
 
 func RegisterByMail(c *gin.Context) {
-	//
+	var json registerByMailInput
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 }
 
 func ResendMail(c *gin.Context)  {

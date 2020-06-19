@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/hashicorp/go-uuid"
+	"github.com/satori/uuid"
 	"log"
 	"time"
 )
@@ -9,7 +9,7 @@ import (
 type User struct {
 	CustomModel
 
-	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
 	Name      string    `gorm:"type:string;not null"`
 	Email     string    `gorm:"type:string;size:128;not null"`
 	CreatedAt time.Time

@@ -1,16 +1,16 @@
 package user_service
 
 import (
+	"auth/app"
 	"auth/models"
-	"github.com/jinzhu/gorm"
 )
 
 type UserService struct {
-	DB *gorm.DB
+	app *app.Instance
 }
 
-func New() (service *UserService,err error) {
-	return
+func New(app *app.Instance) *UserService {
+	return &UserService{app: app}
 }
 
 func (service *UserService)GetUserByUUID(uuid string) (err error) {
@@ -22,7 +22,7 @@ func (service *UserService)Create(data map[string]interface{}) (err error) {
 		Name: data["name"].(string),
 		Email: data["email"].(string),
 	}
-	user.SetConnection(service.DB)
+	user.SetConnection(service.app.Database)
 	if err = user.Create(); err != nil {
 		return
 	}

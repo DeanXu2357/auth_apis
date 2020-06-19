@@ -1,83 +1,53 @@
 package user_service
 
 import (
+	a "auth/app"
+	c "auth/configs"
+	"fmt"
 	"github.com/jinzhu/gorm"
-	"reflect"
+	"github.com/smartystreets/assertions"
+	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func TestNew(t *testing.T) {
-	tests := []struct {
-		name        string
-		wantService *UserService
-		wantErr     bool
-	}{
-		// TODO: Add test cases.
+	app, err := initApplication()
+	if err != nil {
+		assert.Fail(t, err.Error())
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotService, err := New()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(gotService, tt.wantService) {
-				t.Errorf("New() gotService = %v, want %v", gotService, tt.wantService)
-			}
-		})
-	}
+	actual := New(app)
+
+	assertions.ShouldHaveSameTypeAs(actual, "UserService")
 }
 
 func TestUserService_Create(t *testing.T) {
-	type fields struct {
-		DB *gorm.DB
-	}
-	type args struct {
-		data map[string]interface{}
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			service := &UserService{
-				DB: tt.fields.DB,
-			}
-			if err := service.Create(tt.args.data); (err != nil) != tt.wantErr {
-				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
 }
 
 func TestUserService_GetUserByUUID(t *testing.T) {
-	type fields struct {
-		DB *gorm.DB
+}
+
+func initApplication() (application *a.Instance, err error) {
+	c.InitConfig()
+	config := c.GetConfigs()
+
+
+	dbInfo := fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+		config.Database.DBHost,
+		config.Database.DBPort,
+		config.Database.DBUser,
+		config.Database.DBName,
+		config.Database.DBPassword)
+	db, err := gorm.Open("postgres", dbInfo)
+	if err != nil {
+		log.Printf("Database Connection failed : %s", err)
+		return
 	}
-	type args struct {
-		uuid string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			service := &UserService{
-				DB: tt.fields.DB,
-			}
-			if err := service.GetUserByUUID(tt.args.uuid); (err != nil) != tt.wantErr {
-				t.Errorf("GetUserByUUID() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+	defer db.Close()
+
+	application = a.New(config, db)
+
+	return
 }

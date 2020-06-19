@@ -10,6 +10,12 @@ type Instance struct {
 	Database *gorm.DB
 }
 
+var instance *Instance
+
+func Setup() {
+    
+}
+
 func New(c *configs.Configurations, d *gorm.DB) *Instance {
 	return &Instance{c, d}
 }
