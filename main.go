@@ -16,7 +16,7 @@ import (
 var application *a.Instance
 
 func init() {
-	application = a.Get()
+	application = a.New()
 }
 
 func doAfterShutdown() {

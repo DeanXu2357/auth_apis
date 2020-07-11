@@ -41,7 +41,7 @@ func setup() (*Configurations, *gorm.DB) {
     return config, db
 }
 
-func Get() *Instance {
+func New() *Instance {
     once.Do(func() {
         c, d := setup()
         instance = &Instance{c, d}
