@@ -12,6 +12,8 @@ var application *app.Instance
 func InitRouter(application *app.Instance) *gin.Engine {
 	r := gin.Default()
 
+	emailController := controllers.NewEmailController(application)
+
 	r.GET("/test_db", ShowDB)
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")
@@ -19,9 +21,9 @@ func InitRouter(application *app.Instance) *gin.Engine {
 		v1.GET("/health", h.Health)
 
 		emails := v1.Group("/email")
-		emails.POST("/register", controllers.RegisterByMail)
-		emails.POST("/resend", controllers.ResendMail)
-		emails.POST("/activate", controllers.ActivateEmailRegister)
+		emails.POST("/register", emailController.RegisterByMail)
+		emails.POST("/resend", emailController.ResendMail)
+		emails.POST("/activate", emailController.ActivateEmailRegister)
 	}
 
 	return r
