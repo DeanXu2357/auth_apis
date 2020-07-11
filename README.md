@@ -4,3 +4,5 @@
 `sudo docker-compose up -d`
 * 變更後重新編譯  
 `go build -o main && sudo docker-compose restart app`
+* Run test
+`go test ./...`

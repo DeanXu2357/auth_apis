@@ -1,9 +1,8 @@
 package main
 
 import (
-	c "auth/configs"
 	a "auth/app"
-	"auth/routes"
+    "auth/routes"
 	"context"
 	"fmt"
 	"log"
@@ -12,34 +11,12 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var application *a.Instance
 
 func init() {
-	c.InitConfig()
-	config := c.GetConfigs()
-
-	dbInfo := fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
-		config.Database.DBHost,
-		config.Database.DBPort,
-		config.Database.DBUser,
-		config.Database.DBName,
-		config.Database.DBPassword)
-	db, err := gorm.Open("postgres", dbInfo)
-	if err != nil {
-		log.Printf("Database Connection failed : %s", err)
-	}
-	defer db.Close()
-
-	db.DB().SetMaxIdleConns(4)
-	db.DB().SetMaxOpenConns(8)
-	db.DB().SetConnMaxLifetime(time.Minute)
-
-	application = a.New(config, db)
+	application = a.Get()
 }
 
 func doAfterShutdown() {
