@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"path"
+	"runtime"
 )
-
-var Configs *Configurations
 
 type Configurations struct {
 	Server ServerConfigurations
@@ -24,9 +24,13 @@ type DatabaseConfigurations struct {
 	DBPassword string
 }
 
-func InitConfig() {
+var configPath = "./app"
+
+func InitConfigs() *Configurations {
+	var Configs *Configurations
+
 	viper.SetConfigName("app")
-	viper.AddConfigPath("./configs/")
+	viper.AddConfigPath(configPath)
 	viper.AutomaticEnv()
 	viper.SetConfigType("yaml")
 
@@ -40,9 +44,13 @@ func InitConfig() {
 	if err != nil {
 		fmt.Printf("Unable to decode into struct, %v", err)
 	}
+
+	return Configs
 }
 
-func GetConfigs() (configs *Configurations) {
-	 configs = Configs
-	 return
+func SetAbsolutePath() {
+	_, filename, _, ok := runtime.Caller(1)
+	if ok {
+		configPath = path.Dir(filename)
+	}
 }

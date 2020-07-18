@@ -18,8 +18,7 @@ var instance *Instance
 var once sync.Once
 
 func setup() (*Configurations, *gorm.DB) {
-    InitConfig()
-	config := GetConfigs()
+	config := InitConfigs()
 
     dbInfo := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
@@ -47,6 +46,10 @@ func New() *Instance {
         instance = &Instance{c, d}
     })
 	return instance
+}
+
+func (i *Instance)SetConfigs(c *Configurations) {
+	i.Configs = c
 }
 
 func (i *Instance)GetConfig() *Configurations {
