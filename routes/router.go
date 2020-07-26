@@ -31,6 +31,6 @@ func InitRouter(application *app.Instance) *gin.Engine {
 
 func ShowDB(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": application.Configs.Database.DBName,
+		"message": string(application.Configs.Database.DBName),
 	})
 }
