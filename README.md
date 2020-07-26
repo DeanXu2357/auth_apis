@@ -6,3 +6,6 @@
 `sudo docker-compose exec app go build -o main && sudo docker-compose restart  app`
 * Run test
 `go test ./...`
+
+* About Migrate  
+`https://github.com/golang-migrate/migrate/tree/master/cmd/migrate`
