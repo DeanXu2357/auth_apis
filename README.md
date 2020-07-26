@@ -9,3 +9,8 @@
 
 * About Migrate  
 `https://github.com/golang-migrate/migrate/tree/master/cmd/migrate`
+
+## Q&A
+
+* migration failed (fix and force version)  
+run  `drop table schema_migrations;` in db

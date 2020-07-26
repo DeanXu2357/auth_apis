@@ -34,6 +34,6 @@
 |---|---|---|---|---|---|
 |id|int||N|PK|AutoIncreament|
 |email|string|128|N|index||
-|verification|unsigned tiny int||0|N||0:未驗證, 1:已驗證|
+|verification|smallint||0|N||0:未驗證, 1:已驗證|
 |created_at|timestamp|||||
 |updated_at|timestamp|||||
