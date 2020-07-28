@@ -18,7 +18,7 @@ func TestUseAbsolutePath(t *testing.T) {
 
 func InitApplicationInTest() *a.Instance {
 	app := a.New()
-	a.SetAbsolutePath()
+	a.SetConfigAbsolutePath()
 	configs := a.InitConfigs()
 	app.SetConfigs(configs)
 	return app

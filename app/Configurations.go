@@ -48,8 +48,8 @@ func InitConfigs() *Configurations {
 	return Configs
 }
 
-func SetAbsolutePath() {
-	_, filename, _, ok := runtime.Caller(1)
+func SetConfigAbsolutePath() {
+	_, filename, _, ok := runtime.Caller(0)
 	if ok {
 		configPath = path.Dir(filename)
 	}
