@@ -25,11 +25,12 @@ type DatabaseConfigurations struct {
 }
 
 var configPath = "./app"
+var configName = "app"
 
 func InitConfigs() *Configurations {
 	var Configs *Configurations
 
-	viper.SetConfigName("app")
+	viper.SetConfigName(configName)
 	viper.AddConfigPath(configPath)
 	viper.AutomaticEnv()
 	viper.SetConfigType("yaml")
@@ -46,6 +47,10 @@ func InitConfigs() *Configurations {
 	}
 
 	return Configs
+}
+
+func SetConfigName(name string) {
+	configName = name
 }
 
 func SetAbsolutePath() {

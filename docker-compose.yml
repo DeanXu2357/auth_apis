@@ -23,7 +23,8 @@ services:
       - postgres_data:/var/lib/postgresql
     environment:
       POSTGRES_PASSWORD: 'fortestpwd'
-      POSTGRES_DB: auth
+#      POSTGRES_DB: auth
+      POSTGRES_MULTIPLE_DATABASES: auth, auth_test
     shm_size: 512mb
     networks:
       - backend
