@@ -1,5 +1,5 @@
 server:
-  app_env: local
+  app_env: test
   port: 8080
 
 database:

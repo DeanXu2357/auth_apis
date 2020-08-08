@@ -1,4 +1,5 @@
 .idea/
 configs/app.yml
+configs/app.test.yml
 vendor/
 main
