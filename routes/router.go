@@ -5,14 +5,16 @@ import (
 	h "auth/routes/Api/v1"
 	"auth/routes/Api/v1/controllers"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var application *app.Instance
 
-func InitRouter(application *app.Instance) *gin.Engine {
+func InitRouter(app *app.Instance) *gin.Engine {
 	r := gin.Default()
+	application = app
 
-	emailController := controllers.NewEmailController(application)
+	emailController := controllers.NewEmailController(app)
 
 	r.GET("/test_db", ShowDB)
 	routes := r.Group("/api")
@@ -30,7 +32,20 @@ func InitRouter(application *app.Instance) *gin.Engine {
 }
 
 func ShowDB(c *gin.Context) {
+	dbName := &application.Configs.Database.DBName
+	db := application.Database
+	if dbName == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Undefined database name"})
+		return
+	}
+
+	pingErr := db.DB().Ping()
+	if pingErr != nil {
+		c.AbortWithError(http.StatusInternalServerError, pingErr)
+		return
+	}
+
 	c.JSON(200, gin.H{
-		"message": string(application.Configs.Database.DBName),
+		"message": dbName,
 	})
 }
