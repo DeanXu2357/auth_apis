@@ -7,8 +7,10 @@
 * Run test  
 `go test ./...`
 
-* About Migrate  
+## About Migrate  
 `https://github.com/golang-migrate/migrate/tree/master/cmd/migrate`
+* migrate from local 
+`./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up`
 
 ## Q&A
 
