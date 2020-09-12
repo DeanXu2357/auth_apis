@@ -2,8 +2,7 @@ package routes
 
 import (
 	"auth/app"
-	h "auth/routes/Api/v1"
-	"auth/routes/Api/v1/controllers"
+	handlerV1 "auth/routes/handlers/v1"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,18 +13,18 @@ func InitRouter(app *app.Instance) *gin.Engine {
 	r := gin.Default()
 	application = app
 
-	emailController := controllers.NewEmailController(app)
+	emailLoginHandler := handlerV1.NewEmailController(app)
 
 	r.GET("/test_db", ShowDB)
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")
 	{
-		v1.GET("/health", h.Health)
+		v1.GET("/health", handlerV1.Health)
 
 		emails := v1.Group("/email")
-		emails.POST("/register", emailController.RegisterByMail)
-		emails.POST("/resend", emailController.ResendMail)
-		emails.POST("/activate", emailController.ActivateEmailRegister)
+		emails.POST("/register", emailLoginHandler.RegisterByMail)
+		emails.POST("/resend", emailLoginHandler.ResendMail)
+		emails.POST("/activate", emailLoginHandler.ActivateEmailRegister)
 	}
 
 	return r

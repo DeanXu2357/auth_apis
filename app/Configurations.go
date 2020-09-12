@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"log"
 	"path"
 	"runtime"
 )
@@ -30,6 +31,7 @@ var configName = "app"
 func InitConfigs() *Configurations {
 	var Configs *Configurations
 
+	log.Print(configName)
 	viper.SetConfigName(configName)
 	viper.AddConfigPath(configPath)
 	viper.AutomaticEnv()
@@ -54,7 +56,7 @@ func SetConfigName(name string) {
 }
 
 func SetAbsolutePath() {
-	_, filename, _, ok := runtime.Caller(1)
+	_, filename, _, ok := runtime.Caller(0)
 	if ok {
 		configPath = path.Dir(filename)
 	}
