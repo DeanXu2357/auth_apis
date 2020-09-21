@@ -9,4 +9,6 @@ require (
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d
 	github.com/spf13/viper v1.7.0
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
+	golang.org/x/sys v0.0.0-20200121082415-34d275377bf9 // indirect
+	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
