@@ -3,6 +3,7 @@ package tests
 
 import (
 	a "auth/app"
+	"bytes"
 	"fmt"
 	"log"
 	"os/exec"
@@ -10,14 +11,14 @@ import (
 	"runtime"
 )
 
+var app *a.Instance
+
 // InitialTestingApplication create Instance type for testing environment
 // the application *Instance use {root}/app/app.test.yml as configuration.
 func InitialTestingApplication() *a.Instance {
-	app := a.New()
-	a.SetConfigName("app.test")
+	a.SetConfigName("app")
 	a.SetAbsolutePath()
-	configs := a.InitConfigs()
-	app.SetConfigs(configs)
+	app = a.NewStatic()
 	return app
 }
 
@@ -25,10 +26,16 @@ func InitialTestingApplication() *a.Instance {
 func RefreshDatabase(app *a.Instance) {
 	cmd, args := prepareCommandString(app.Configs.Database)
 
-	cmdDown := exec.Command(cmd, append(args, "down")...)
+	cmdDown := exec.Command(cmd, append(args, "down", "-all")...)
+	fmt.Printf("cmdDown: %s\n", cmdDown.String())
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmdDown.Stdout = &out
+	cmdDown.Stderr = &stderr
 	err := cmdDown.Run()
 	if cmdDown.Run() != nil {
-		log.Panic(err)
+		fmt.Printf("out:%s\nerr:%s\n", out.String(), stderr.String())
+		log.Fatal(err)
 	}
 
 	cmdUp := exec.Command(cmd, append(args, "up")...)
@@ -58,7 +65,7 @@ func prepareCommandString(dbConfig a.DatabaseConfigurations) (string, []string) 
 		dbConfig.DBPort,
 		dbConfig.DBName)
 
-	migrationsPath := fmt.Sprintf("%s/../db/migrations", nowPath)
+	migrationsPath := fmt.Sprintf("\"%s/../db/migrations/\"", nowPath)
 
-	return command, []string{connection, "-verbose", migrationsPath}
+	return command, []string{"-database" ,connection, "-verbose", "-path", migrationsPath}
 }
