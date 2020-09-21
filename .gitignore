@@ -1,4 +1,4 @@
 .idea/
-app/app.yml
+auth/app.yml
 vendor/
 main
