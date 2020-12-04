@@ -62,10 +62,6 @@ func (h *EmailLoginHandler)ActivateEmailRegister(c *gin.Context) {
 	//
 }
 
-func hashPassword(pwd string) string {
-	return pwd
-}
-
 func (h *EmailLoginHandler)Register(name string, email string, password string) (*m.User, error) {
 	// todo : find a transaction manager library
 	tx := h.Application.Database.Begin()

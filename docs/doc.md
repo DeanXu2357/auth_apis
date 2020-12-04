@@ -40,3 +40,9 @@
 |verification|smallint||0|N||0:未驗證, 1:已驗證|
 |created_at|timestamp|||||
 |updated_at|timestamp|||||
+
+## todo list
+[ ] docker-compose.yml health check if db ready
+[ ] add grpc protocal
+[ ] add new service to handle job
+[ ] 
