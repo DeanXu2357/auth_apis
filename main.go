@@ -1,10 +1,11 @@
 package main
 
 import (
-	a "auth/app"
-    "auth/routes"
+	"auth/lib"
+	"auth/routes"
 	"context"
 	"fmt"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"os"
@@ -13,21 +14,16 @@ import (
 	"time"
 )
 
-var application *a.Instance
-
-func init() {
-	application = a.New()
-}
-
 func doAfterShutdown() {
 	log.Print("doing events after shutdown")
 }
 
 func main() {
-	router := routes.InitRouter(application)
+	lib.InitialConfigurations()
+	router := routes.InitRouter()
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%v", application.Configs.Server.Port),
+		Addr: fmt.Sprintf(":%v", viper.Get("server_port")),
 		Handler: router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

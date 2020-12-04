@@ -1,18 +1,14 @@
 package handlers_v1
 
 import (
-	"auth/app"
 	m "auth/models"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"golang.org/x/crypto/bcrypt"
 )
-
-type EmailLoginHandler struct {
-	Application *app.Instance
-}
 
 type registerByMailInput struct {
 	Name string `json:"name" binding:"required"`
@@ -20,13 +16,14 @@ type registerByMailInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
-const EmailAlreadyRegistered = "email_already_registered"
-
-func NewEmailController(app *app.Instance) *EmailLoginHandler {
-	return &EmailLoginHandler{Application: app}
+type verifyMailLogin struct {
+	Email string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
-func (h *EmailLoginHandler)RegisterByMail(c *gin.Context) {
+const EmailAlreadyRegistered = "email_already_registered"
+
+func RegisterByMail(c *gin.Context) {
 	var input registerByMailInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -38,8 +35,9 @@ func (h *EmailLoginHandler)RegisterByMail(c *gin.Context) {
 	name := input.Name
 	email := input.Email
 	password := input.Password
+	db := c.MustGet("DB").(*gorm.DB)
 
-	user, err := h.Register(name, email, password);
+	user, err := register(name, email, password, db);
 	switch err.Error() {
 	case EmailAlreadyRegistered:
 		c.JSON(http.StatusBadRequest, gin.H{"status": 40009, "message": "email is already registered"})
@@ -53,18 +51,30 @@ func (h *EmailLoginHandler)RegisterByMail(c *gin.Context) {
 	return
 }
 
+func VerifyMailLogin(c *gin.Context) {
+	var input registerByMailInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		log.Print(err)
+		c.JSON(http.StatusBadRequest, gin.H{"status": 40022, "message": "validation failed"})
+		return
+	}
 
-func (h *EmailLoginHandler)ResendMail(c *gin.Context)  {
+	//db := c.MustGet("DB").(*gorm.DB)
+
+	//session :=
+}
+
+func ResendMail(c *gin.Context)  {
 	//
 }
 
-func (h *EmailLoginHandler)ActivateEmailRegister(c *gin.Context) {
+func ActivateEmailRegister(c *gin.Context) {
 	//
 }
 
-func (h *EmailLoginHandler)Register(name string, email string, password string) (*m.User, error) {
+func register(name string, email string, password string, db *gorm.DB) (*m.User, error) {
 	// todo : find a transaction manager library
-	tx := h.Application.Database.Begin()
+	tx := db.Begin()
 
 	user := &m.User{Name: name, Email: email}
 

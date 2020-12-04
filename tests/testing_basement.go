@@ -2,32 +2,23 @@
 package tests
 
 import (
-	a "auth/app"
 	"bytes"
 	"fmt"
+	"github.com/spf13/viper"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os/exec"
 	"path"
 	"runtime"
+	"strings"
 )
 
-var app *a.Instance
-
-// InitialTestingApplication create Instance type for testing environment
-// the application *Instance use {root}/app/app.test.yml as configuration.
-func InitialTestingApplication() *a.Instance {
-	a.SetConfigName("app")
-	a.SetAbsolutePath()
-	app = a.NewStatic()
-	return app
-}
-
 // RefreshDatabase
-func RefreshDatabase(app *a.Instance) {
-	cmd, args := prepareCommandString(app.Configs.Database)
+func RefreshDatabase() {
+	cmd, args := prepareCommandString()
 
 	cmdDown := exec.Command(cmd, append(args, "down", "-all")...)
-	fmt.Printf("cmdDown: %s\n", cmdDown.String())
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdDown.Stdout = &out
@@ -45,10 +36,17 @@ func RefreshDatabase(app *a.Instance) {
 	}
 }
 
+func Call(r http.Handler, method, path, body string) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(method, path, strings.NewReader(body))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
+}
+
 // prepareCommandString
 // migration command cheat sheet:
 // ./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up
-func prepareCommandString(dbConfig a.DatabaseConfigurations) (string, []string) {
+func prepareCommandString() (string, []string) {
 	nowPath := ""
 	_, filename, _, ok := runtime.Caller(1)
 	if ok {
@@ -59,11 +57,11 @@ func prepareCommandString(dbConfig a.DatabaseConfigurations) (string, []string) 
 
 	connection := fmt.Sprintf(
 		"\"postgres://%s:%s@%s:%s/%s?sslmode=disable\"",
-		dbConfig.DBUser,
-		dbConfig.DBPassword,
-		dbConfig.DBHost,
-		dbConfig.DBPort,
-		dbConfig.DBName)
+		viper.Get("dbhost"),
+		viper.Get("dbport"),
+		viper.Get("user"),
+		viper.Get("dbname"),
+		viper.Get("dbpassword"))
 
 	migrationsPath := fmt.Sprintf("\"%s/../db/migrations/\"", nowPath)
 

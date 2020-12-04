@@ -1,7 +1,7 @@
 package handler_tests
 
 import (
-	handlers_v1 "auth/routes/handlers/v1"
+	handlers_v1 "auth/handlers/v1"
 	"auth/tests"
 	"github.com/smartystreets/assertions"
 	"testing"

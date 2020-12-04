@@ -1,7 +1,7 @@
 package handler_tests
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "gorm.io/driver/postgres"
 )
 
 //func Test_InitUserService(t *testing.T) {

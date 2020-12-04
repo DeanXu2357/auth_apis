@@ -1,0 +1,10 @@
+app_env: local
+server_port: 8080
+
+dbhost: db
+#dbhost: 127.0.0.1
+dbport: 5432
+#dbport: 45487
+dbname: auth
+dbuser: postgres
+dbpassword: fortestpwd
