@@ -8,8 +8,6 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
 	r.Use(middlewares.SetDB())
 
 	routes := r.Group("/api")

@@ -17,11 +17,11 @@ func SetDB() gin.HandlerFunc {
 
 		dbInfo := fmt.Sprintf(
 			"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
-			viper.Get("dbhost"),
-			viper.Get("dbport"),
-			viper.Get("user"),
-			viper.Get("dbname"),
-			viper.Get("dbpassword"))
+			viper.GetString("db_host"),
+			viper.GetString("db_port"),
+			viper.GetString("db_user"),
+			viper.GetString("db_name"),
+			viper.GetString("db_password"))
 		log.Printf("dbInfo: %s", dbInfo)
 
 		db, err := gorm.Open(postgres.Open(dbInfo), &gorm.Config{})
