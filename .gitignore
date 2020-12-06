@@ -1,4 +1,4 @@
 .idea/
-./app/app.yml
 vendor/
 main
+config.yml
