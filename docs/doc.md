@@ -44,5 +44,8 @@
 ## todo list
 [ ] docker-compose.yml health check if db ready
 [ ] add grpc protocal
-[ ] add new service to handle job
-[ ] 
+[ ] add new command to handle job
+[x] refactor
+[x] basic api testing
+[ ] basic lib testing
+[ ] verify api
