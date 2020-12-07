@@ -7,11 +7,10 @@ import (
 	"runtime"
 )
 
-var configPath = "./"
+var configPath = "/go/src/app"
 var configName = "config"
 
 func InitialConfigurations()  {
-	log.Print(configName)
 	viper.SetConfigName(configName)
 	viper.AddConfigPath(configPath)
 	viper.AutomaticEnv()
