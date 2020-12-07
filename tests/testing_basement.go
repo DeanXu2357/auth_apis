@@ -2,15 +2,16 @@
 package tests
 
 import (
+	"auth/lib"
+	"auth/routes"
 	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os/exec"
-	"path"
-	"runtime"
 	"strings"
 )
 
@@ -23,17 +24,30 @@ func RefreshDatabase() {
 	var stderr bytes.Buffer
 	cmdDown.Stdout = &out
 	cmdDown.Stderr = &stderr
+	cmdDown.Dir = "/go/src/app"
 	err := cmdDown.Run()
-	if cmdDown.Run() != nil {
-		fmt.Printf("out:%s\nerr:%s\n", out.String(), stderr.String())
+	if err != nil {
+		log.Printf("\nout:%s\nerr:%s\n", out.String(), stderr.String())
+		log.Print(cmdDown.Args)
 		log.Fatal(err)
 	}
 
 	cmdUp := exec.Command(cmd, append(args, "up")...)
+	cmdUp.Stdout = &out
+	cmdUp.Stderr = &stderr
+	cmdUp.Dir = "/go/src/app"
 	err = cmdUp.Run()
 	if err != nil {
+		log.Printf("out:%s\nerr:%s\n", out.String(), stderr.String())
 		log.Panic(err)
 	}
+}
+
+func PrepareServer() *gin.Engine {
+	lib.InitialConfigurations()
+	RefreshDatabase()
+	router := routes.InitRouter()
+	return router
 }
 
 func Call(r http.Handler, method, path, body string) *httptest.ResponseRecorder {
@@ -47,23 +61,22 @@ func Call(r http.Handler, method, path, body string) *httptest.ResponseRecorder 
 // migration command cheat sheet:
 // ./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up
 func prepareCommandString() (string, []string) {
-	nowPath := ""
-	_, filename, _, ok := runtime.Caller(1)
-	if ok {
-		nowPath = path.Dir(filename)
-	}
-
-	command := fmt.Sprintf("%s/../cmd/migrate.linux-amd64", nowPath)
+	//nowPath := ""
+	//_, filename, _, ok := runtime.Caller(1)
+	//if ok {
+	//	nowPath = path.Dir(filename)
+	//}
+	//
+	//command := fmt.Sprintf("%s/../cmd/migrate.linux-amd64", nowPath)
+	command := "./cmd/migrate.linux-amd64"
 
 	connection := fmt.Sprintf(
-		"\"postgres://%s:%s@%s:%s/%s?sslmode=disable\"",
-		viper.Get("dbhost"),
-		viper.Get("dbport"),
-		viper.Get("user"),
-		viper.Get("dbname"),
-		viper.Get("dbpassword"))
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		viper.GetString("db_user"),
+		viper.GetString("db_password"),
+		viper.GetString("db_host"),
+		viper.GetString("db_port"),
+		viper.GetString("db_name"))
 
-	migrationsPath := fmt.Sprintf("\"%s/../db/migrations/\"", nowPath)
-
-	return command, []string{"-database" ,connection, "-verbose", "-path", migrationsPath}
+	return command, []string{"-database" ,connection, "-verbose", "-path", "./db/migrations/"}
 }

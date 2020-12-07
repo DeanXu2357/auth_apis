@@ -37,14 +37,16 @@ func RegisterByMail(c *gin.Context) {
 	password := input.Password
 	db := c.MustGet("DB").(*gorm.DB)
 
-	user, err := register(name, email, password, db);
-	switch err.Error() {
-	case EmailAlreadyRegistered:
-		c.JSON(http.StatusBadRequest, gin.H{"status": 40009, "message": "email is already registered"})
-		return
-	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	user, err := Register(name, email, password, db);
+	if err != nil {
+		switch err.Error() {
+		case EmailAlreadyRegistered:
+			c.JSON(http.StatusBadRequest, gin.H{"status": 40009, "message": "email is already registered"})
+			return
+		default:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "user_id": user.ID})
@@ -72,9 +74,15 @@ func ActivateEmailRegister(c *gin.Context) {
 	//
 }
 
-func register(name string, email string, password string, db *gorm.DB) (*m.User, error) {
+func Register(name string, email string, password string, db *gorm.DB) (*m.User, error) {
 	// todo : find a transaction manager library
 	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Print(r.(error))
+			tx.Rollback()
+		}
+	}()
 
 	user := &m.User{Name: name, Email: email}
 
