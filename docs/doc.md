@@ -49,3 +49,7 @@
 [x] basic api testing
 [ ] basic lib testing
 [ ] verify api
+[ ] refactoring lib file structure 
+    Ex: lib/ -> config/ -> config.go 
+[ ] rabbitmq connection
+[ ] database asseration function

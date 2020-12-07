@@ -61,15 +61,6 @@ func Call(r http.Handler, method, path, body string) *httptest.ResponseRecorder 
 // migration command cheat sheet:
 // ./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up
 func prepareCommandString() (string, []string) {
-	//nowPath := ""
-	//_, filename, _, ok := runtime.Caller(1)
-	//if ok {
-	//	nowPath = path.Dir(filename)
-	//}
-	//
-	//command := fmt.Sprintf("%s/../cmd/migrate.linux-amd64", nowPath)
-	command := "./cmd/migrate.linux-amd64"
-
 	connection := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		viper.GetString("db_user"),
@@ -78,5 +69,5 @@ func prepareCommandString() (string, []string) {
 		viper.GetString("db_port"),
 		viper.GetString("db_name"))
 
-	return command, []string{"-database" ,connection, "-verbose", "-path", "./db/migrations/"}
+	return "./cmd/migrate.linux-amd64", []string{"-database" ,connection, "-verbose", "-path", "./db/migrations/"}
 }
