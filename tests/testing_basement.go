@@ -47,7 +47,8 @@ func RefreshDatabase() {
 func PrepareServer() *gin.Engine {
 	lib.InitialConfigurations()
 	RefreshDatabase()
-	router := routes.InitRouter()
+	db := lib.InitialDatabase()
+	router := routes.InitRouter(db)
 	return router
 }
 

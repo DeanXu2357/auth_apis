@@ -56,6 +56,7 @@
 * [ ] refactoring lib file structure  
     Ex: lib/ -> config/ -> config.go 
 * [ ] add command to handle job
+* [ ] Refresh database in sequence
 * [ ] verify api
 * [ ] rabbitmq connection
 * [ ] docker-compose.yml health check if db ready

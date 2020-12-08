@@ -20,7 +20,8 @@ func doAfterShutdown() {
 
 func main() {
 	lib.InitialConfigurations()
-	router := routes.InitRouter()
+	db := lib.InitialDatabase()
+	router := routes.InitRouter(db)
 
 	srv := &http.Server{
 		Addr: fmt.Sprintf(":%v", viper.Get("server_port")),
@@ -43,6 +44,13 @@ func main() {
 	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
+
+	sqlDB, _ := db.DB()
+	err := sqlDB.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Println("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

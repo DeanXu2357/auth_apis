@@ -4,11 +4,12 @@ import (
 	handlerV1 "auth/handlers/v1"
 	"auth/middlewares"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func InitRouter() *gin.Engine {
+func InitRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
-	r.Use(middlewares.SetDB())
+	r.Use(middlewares.SetDB(db))
 
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")
