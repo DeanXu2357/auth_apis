@@ -16,6 +16,7 @@ import (
 )
 
 // RefreshDatabase
+// TODO: modify to pipe , prevent concurrent issue
 func RefreshDatabase() {
 	cmd, args := prepareCommandString()
 
