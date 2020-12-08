@@ -1,6 +1,9 @@
 package integration
 
 import (
+	"auth/lib"
+	"auth/lib/asseration"
+	"auth/models"
 	"auth/tests"
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
@@ -20,6 +23,7 @@ func Test_Health(t *testing.T) {
 
 func Test_RegisterByEmailSuccess(t *testing.T) {
 	router := tests.PrepareServer()
+	db := lib.InitialDatabase()
 
 	name := "poyu"
 	email := "dean.dh@gmail.com"
@@ -30,4 +34,6 @@ func Test_RegisterByEmailSuccess(t *testing.T) {
 
 	log.Printf("response body : " + w.Body.String())
 	assert.Contains(t, w.Body.String(), "success")
+	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name":name}, db)
+	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email":email}, db)
 }

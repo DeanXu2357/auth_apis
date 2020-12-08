@@ -12,6 +12,6 @@ type EmailLogin struct {
 	VerifiedAt time.Time
 }
 
-func (EmailLogin) TableName() string {
+func (m EmailLogin) TableName() string {
 	return "email_login"
 }

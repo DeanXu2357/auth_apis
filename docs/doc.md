@@ -42,14 +42,21 @@
 |updated_at|timestamp|||||
 
 ## todo list
-[ ] docker-compose.yml health check if db ready
-[ ] add grpc protocal
-[ ] add new command to handle job
-[x] refactor
-[x] basic api testing
-[ ] basic lib testing
-[ ] verify api
-[ ] refactoring lib file structure 
+* [x] refactor
+* [x] basic api testing
+* [x] database asseration function [ING] 
+* [ ] add lib/factory 
+* [ ] basic lib testing
+    * [x] assertion
+        * [ ] success test case
+        * [ ] failed and present error msg test case 
+    * [ ] config
+    * [ ] database initial
+    * [ ] factory
+* [ ] refactoring lib file structure  
     Ex: lib/ -> config/ -> config.go 
-[ ] rabbitmq connection
-[ ] database asseration function
+* [ ] add command to handle job
+* [ ] verify api
+* [ ] rabbitmq connection
+* [ ] docker-compose.yml health check if db ready
+* [ ] add grpc protocal

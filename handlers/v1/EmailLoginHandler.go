@@ -85,7 +85,6 @@ func Register(name string, email string, password string, db *gorm.DB) (*m.User,
 	}()
 
 	user := &m.User{Name: name, Email: email}
-
 	if err := tx.Create(user).Error; err != nil {
 		tx.Rollback()
 		return nil, errors.New(EmailAlreadyRegistered)
@@ -102,7 +101,6 @@ func Register(name string, email string, password string, db *gorm.DB) (*m.User,
 	}
 
 	tx.Commit()
-
 
 	return user, nil
 }
