@@ -45,16 +45,17 @@
 * [x] refactor
 * [x] basic api testing
 * [x] database asseration function [ING] 
-* [ ] add lib/factory 
+* [x] add lib/factory 
 * [ ] basic lib testing
     * [x] assertion
         * [ ] success test case
         * [ ] failed and present error msg test case 
     * [ ] config
     * [ ] database initial
-    * [ ] factory
+    * [x] factory
 * [ ] refactoring lib file structure  
-    Ex: lib/ -> config/ -> config.go 
+    Ex: lib/ -> config/ -> config.go
+* [ ] refactor lib/asseration name to assertion
 * [ ] add command to handle job
 * [ ] Refresh database in sequence
 * [ ] verify api
