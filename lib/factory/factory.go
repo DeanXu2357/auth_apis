@@ -2,15 +2,24 @@ package factory
 
 import (
 	"github.com/brianvoe/gofakeit/v5"
+	"github.com/fatih/structs"
 	"gorm.io/gorm"
 	"log"
 	"reflect"
+	//m "auth/models"
 )
 
 func Create(db *gorm.DB, model interface{}, custom map[string]interface{}, number int) []interface{} {
 	models := Generate(model, custom, number)
 
-	db.Create(&models)
+	for _, m := range models {
+		m2 := structs.Map(m)
+		log.Println(m2)
+		db.Model(model).Create(m2)
+	}
+	// TODO: refactor this
+	// because of using orm batch insert , hooks won’t be invoked
+	// use log insert for temporary
 
 	return models
 }
@@ -22,16 +31,14 @@ func Generate(model interface{}, data map[string]interface{}, number int) []inte
 
 	res := make([]interface{}, 0, number)
 	for i := 0;i < number;i++ {
-		f := fakeOne(model)
-		log.Println(f)
+		gofakeit.Struct(model)
 		if len(data) != 0 {
 			for name, value := range data {
-				setFakeField(f, name, value)
+				setFakeField(model, name, value)
 			}
 		}
-		log.Println(f)
 
-		res = append(res, f)
+		res = append(res, reflect.ValueOf(model).Interface())
 	}
 
 	return res
@@ -39,18 +46,9 @@ func Generate(model interface{}, data map[string]interface{}, number int) []inte
 
 func setFakeField(fakeModel interface{}, fieldName string, value interface{}) {
 	v := reflect.ValueOf(fakeModel).Elem().FieldByName(fieldName)
-	log.Printf("field name and value : %s, %s\n", fieldName, value)
 	if v.IsValid() {
 		vValue := reflect.New(reflect.TypeOf(value))
 		vValue.Elem().Set(reflect.ValueOf(value))
-		v.Set(vValue)
+		v.Set(vValue.Elem())
 	}
-}
-
-func fakeOne(model interface{}) interface{} {
-	modelV := reflect.TypeOf(model).Elem()
-	modelPtr := reflect.New(modelV)
-	gofakeit.Struct(&modelPtr)
-
-	return modelPtr.Interface()
 }

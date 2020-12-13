@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"github.com/satori/uuid"
+	"gorm.io/gorm"
+	"reflect"
 	"time"
 )
 
@@ -11,15 +12,19 @@ type CustomModel interface {
 }
 
 type User struct {
-	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
-	Name      string    `gorm:"type:string;not null"`
-	Email     string    `gorm:"type:string;size:128;not null"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;" fake:"{uuid}"`
+	Name      string    `gorm:"type:string;not null" fake:"{name}"`
+	Email     string    `gorm:"type:string;size:128;not null" fake:"email"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
 }
 
 func (u *User)BeforeCreate(tx *gorm.DB) (err error) {
+	if u.ID != reflect.Zero(reflect.TypeOf(u.ID)).Interface() {
+		return
+	}
+
 	u.ID = uuid.NewV4()
 	return
 }
