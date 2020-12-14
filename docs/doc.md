@@ -58,7 +58,10 @@
 * [ ] refactor lib/asseration name to assertion
 * [ ] add command to handle job
 * [ ] Refresh database in sequence
+    - [ ] add redis image
+    - [ ] add redis connection
+    - [ ] add publisher function
 * [ ] verify api
-* [ ] rabbitmq connection
+* [ ] ~~rabbitmq connection~~ 
 * [ ] docker-compose.yml health check if db ready
 * [ ] add grpc protocal

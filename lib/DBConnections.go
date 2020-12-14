@@ -20,7 +20,7 @@ func InitialDatabase() *gorm.DB {
 		viper.GetString("db_user"),
 		viper.GetString("db_name"),
 		viper.GetString("db_password"))
-	log.Printf("dbInfo: %s", dbInfo)
+	//log.Printf("dbInfo: %s", dbInfo)
 
 	db, err := gorm.Open(postgres.Open(dbInfo), &gorm.Config{})
 	if err != nil {

@@ -1,11 +1,14 @@
 package main
 
 import (
+	"auth/cmd/sending_email"
 	"auth/lib"
 	"auth/routes"
 	"context"
 	"fmt"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
@@ -14,20 +17,50 @@ import (
 	"time"
 )
 
-func doAfterShutdown() {
-	log.Print("doing events after shutdown")
-}
-
 func main() {
+	rootCmd := &cobra.Command{
+		Short: "Console commands for this project",
+	}
+
 	lib.InitialConfigurations()
 	db := lib.InitialDatabase()
+
+	serveCmd := &cobra.Command{
+		Use: "serve",
+		Short: "run server",
+		Run: func(cmd *cobra.Command, args []string) {
+			runServer(db)
+		},
+	}
+
+	rootCmd.AddCommand(sending_email.GenerateCommand())
+	rootCmd.AddCommand(generateTestCmd())
+	rootCmd.AddCommand(serveCmd)
+
+	err := rootCmd.Execute()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func generateTestCmd() *cobra.Command {
+	return &cobra.Command{
+		Use: "test",
+		Short: "for testing",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("test success")
+		},
+	}
+}
+
+func runServer(db *gorm.DB) {
 	router := routes.InitRouter(db)
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%v", viper.Get("server_port")),
-		Handler: router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
+		Addr:         fmt.Sprintf(":%v", viper.Get("server_port")),
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	go func() {
@@ -59,7 +92,7 @@ func main() {
 		log.Fatal("Server Shutdown: ", err)
 	}
 
-	doAfterShutdown()
+	// "doing events after shutdown"
 
 	log.Println("Server exiting")
 }

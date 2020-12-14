@@ -1,4 +1,4 @@
 #!/bin/bash
 
 go build -o main .
-./main
+./main serve
