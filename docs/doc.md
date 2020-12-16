@@ -53,10 +53,12 @@
     * [ ] config
     * [ ] database initial
     * [x] factory
+* [x] double check assertion of "smartystreets/assertions" usage  
+    and replace with "testify/assert"
+* [ ] add command to handle job
 * [ ] refactoring lib file structure  
     Ex: lib/ -> config/ -> config.go
 * [ ] refactor lib/asseration name to assertion
-* [ ] add command to handle job
 * [ ] Refresh database in sequence
     - [ ] add redis image
     - [ ] add redis connection

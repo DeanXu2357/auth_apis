@@ -6,7 +6,7 @@ import (
 	"auth/lib/factory"
 	"auth/models"
 	"auth/tests"
-	"github.com/smartystreets/assertions"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
@@ -17,8 +17,7 @@ func Test_FactoryGenerate(t *testing.T) {
 
 	fakeUser := fakeUsers[0]
 	n := reflect.ValueOf(fakeUser).Elem()
-	assertions.ShouldEqual(n.FieldByName("Name").Interface().(string), name)
-	assertions.ShouldHaveSameTypeAs(fakeUsers, []models.User{})
+	assert.Equal(t, name, n.FieldByName("Name").Interface().(string))
 }
 
 func Test_FactoryCreateOne(t *testing.T) {
@@ -30,7 +29,7 @@ func Test_FactoryCreateOne(t *testing.T) {
 	fakeUsers := factory.Create(db, &models.User{}, map[string]interface{}{"Name":name}, 1)
 
 	fakeUser := fakeUsers[0]
-	assertions.ShouldEqual(reflect.ValueOf(fakeUser).Elem().FieldByName("Name").Interface().(string), name)
+	assert.Equal(t, name, reflect.ValueOf(fakeUser).Elem().FieldByName("Name").Interface().(string))
 	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name":name}, db)
 }
 
