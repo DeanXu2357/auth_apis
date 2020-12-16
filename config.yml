@@ -8,3 +8,7 @@ db_port: 5432
 db_name: auth
 db_user: postgres
 db_password: fortestpwd
+
+redis_addr:
+redis_password:
+redis_email_queue_db:

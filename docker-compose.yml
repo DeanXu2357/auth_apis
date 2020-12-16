@@ -12,6 +12,11 @@ services:
     depends_on:
       - db
 
+  redis:
+    image: redis:6.0.9
+    volumes:
+      - auth_redis_data:/data
+
   db:
     image: postgres:12
     container_name: postgres
@@ -26,3 +31,4 @@ services:
 
 volumes:
   postgres_data:
+  auth_redis_data:
