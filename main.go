@@ -23,12 +23,12 @@ func main() {
 	}
 
 	lib.InitialConfigurations()
-	db := lib.InitialDatabase()
 
 	serveCmd := &cobra.Command{
 		Use: "serve",
 		Short: "run server",
 		Run: func(cmd *cobra.Command, args []string) {
+			db := lib.InitialDatabase()
 			runServer(db)
 		},
 	}
@@ -49,6 +49,7 @@ func generateTestCmd() *cobra.Command {
 		Short: "for testing",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("test success")
+			fmt.Println(viper.GetString("queue.mail_queue.worker_count"))
 		},
 	}
 }
