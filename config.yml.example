@@ -1,10 +1,20 @@
 app_env: local
+app_name: auth_api
 server_port: 8080
 
-dbhost: db
+db_host: db
 #dbhost: 127.0.0.1
-dbport: 5432
+db_port: 5432
 #dbport: 45487
-dbname: auth
-dbuser: postgres
-dbpassword: fortestpwd
+db_name: auth
+db_user: postgres
+db_password: fortestpwd
+
+redis_addr: "redis:6379"
+redis_password:
+redis_db:
+
+queue:
+  mail_queue:
+    redis_db: 0
+    worker_count: 2
