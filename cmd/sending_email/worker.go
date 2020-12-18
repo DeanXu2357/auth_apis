@@ -56,8 +56,6 @@ func GenerateCommand() *cobra.Command {
 
 			go acknowledge(confirms, pool)
 
-			log.Println("looping")
-
 			signalChan := make(chan os.Signal, 1)
 			signal.Notify(signalChan, syscall.SIGUSR1, syscall.SIGINT, syscall.SIGTERM)
 			<-signalChan
@@ -108,7 +106,7 @@ func work(msgCh <-chan *Msg) <-chan *Msg {
 }
 
 func fetchOldInprogress(pool *redis.Pool) []*Msg {
-	log.Println("fetchOldInprogress")
+	log.Println("fetch old jobs")
 	conn := pool.Get()
 	defer func() {
 		err := conn.Close()
@@ -118,7 +116,6 @@ func fetchOldInprogress(pool *redis.Pool) []*Msg {
 	}()
 
 	olds, err := redis.Strings(conn.Do("lrange", getInprogressName(), 0, -1))
-	log.Println(olds)
 	if err != nil {
 		log.Print(err)
 		return nil
@@ -141,18 +138,19 @@ func doFetch (pool *redis.Pool) *Msg {
 
 	message, err := redis.String(conn.Do("brpoplpush", getQueueName(), getInprogressName(), 1))
 	if err != nil {
-		// If redis returns null, the queue is empty. Just ignore the error.
-		if err.Error() != "redigo: nil returned" {
-			log.Println("ERR: ", err)
-			return nil
-		}
+		log.Println("ERR: ", err)
+		return nil
 	}
 	log.Printf("Get %q \n", message)
 
 	msg, err := NewMsg(message)
 	if err != nil {
+		if err.Error() != msgErrEmpty {
+			log.Println(err)
+		}
 		return nil
 	}
+
 	return msg
 }
 
@@ -192,7 +190,10 @@ func redisPoolInit() *redis.Pool {
 		IdleTimeout: 300 * time.Second,
 		MaxActive: 3,
 		Dial: func () (redis.Conn, error) {
-			c, err := redis.Dial("tcp", viper.GetString("redis_addr"))
+			c, err := redis.Dial(
+				"tcp",
+				viper.GetString("redis_addr"),
+				redis.DialDatabase(viper.GetInt("queue.mail_queue.redis_db")))
 			if err != nil {
 				return nil, err
 			}

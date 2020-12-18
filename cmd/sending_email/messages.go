@@ -1,8 +1,17 @@
 package sending_email
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+)
+
+const msgErrEmpty = "empty content input"
 
 func NewMsg(content string) (*Msg, error) {
+	if content == "" {
+		return nil, errors.New(msgErrEmpty)
+	}
+
 	var c msgContent
 	err := json.Unmarshal([]byte(content), &c)
 	if err != nil {
