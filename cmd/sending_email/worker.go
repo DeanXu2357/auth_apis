@@ -8,6 +8,7 @@ import (
 	"github.com/tidwall/gjson"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
@@ -26,38 +27,39 @@ func GenerateCommand() *cobra.Command {
 			stopFetcherCtx, cancelFetcher := context.WithCancel(context.Background())
 			defer cancelFetcher()
 
-			messagesChan := fetch(ctx, rdb)
+			messagesChan := fetch(stopFetcherCtx, rdb)
 			concurrent := viper.GetInt("queue.mail_queue.worker_count")
 			if concurrent < 1 {
 				concurrent = 1
 			}
-			out := make(chan *Msg)
-			for i := 0 ; i < concurrent; i++ {
-				work(messagesChan, out)
+
+			var wg sync.WaitGroup
+			confirms := make(chan *Msg)
+			collect := func(in <-chan *Msg) {
+				defer wg.Done()
+				for n := range in {
+					confirms <- n
+				}
 			}
 
-			go acknowledge(out, rdb)
+			for i := 0 ; i < concurrent; i++ {
+				go collect(work(messagesChan))
 
-			//stopWorkerCtx, cancelWorker := context.WithCancel(context.Background())
-			//
-			//msgChan := make(chan *Msg)
-			//confirmMsgChan := make(chan *Msg)
-			//var f = &Fetcher{"send_email", stopFetcherCtx, msgChan}
-			//Process(stopWorkerCtx, msgChan, viper.GetInt("queue.mail_queue.worker_count"))
-			//f.DoFetch()
-			//f.DoAcknowledge()
+			}
+
+			go func() {
+				wg.Wait()
+				close(confirms)
+			}()
+
+			go acknowledge(confirms, rdb)
 
 			signalChan := make(chan os.Signal, 1)
 			signal.Notify(signalChan, syscall.SIGUSR1, syscall.SIGINT, syscall.SIGTERM)
 			<-signalChan
-			go func() {
-				for sig := range signalChan {
-					switch sig {
-					case syscall.SIGUSR1, syscall.SIGINT, syscall.SIGTERM:
-						// do quit()
-					}
-				}
-			}()
+
+			// todo end app
+			cancelFetcher()
 		},
 	}
 }
@@ -65,22 +67,22 @@ func GenerateCommand() *cobra.Command {
 func fetch(ctx context.Context, redis *redis.Client) <-chan *Msg {
 	out := make(chan *Msg)
 	go func() {
-		defer close(out)
 		for {
 			select {
 			case <-ctx.Done():
 				close(out)
 				return
 			default:
-				msg := dofetch(redis)
-				out <- msg
+				out <- doFetch(redis)
 			}
 		}
 	}()
 	return out
 }
 
-func work(msgCh <-chan *Msg, out chan *Msg) {
+func work(msgCh <-chan *Msg) <-chan *Msg {
+	out := make(chan *Msg)
+
 	go func() {
 		defer close(out)
 		for m := range msgCh {
@@ -90,47 +92,22 @@ func work(msgCh <-chan *Msg, out chan *Msg) {
 			}
 		}
 	}()
+
+	return out
+}
+
+func doFetch (rdb *redis.Client) *Msg {
+	// get old in-progress job
+
+	return &Msg{}
 }
 
 func acknowledge(confirm <-chan *Msg, rdb *redis.Client) {
-	var 
 }
-
-func Process(stopCtx context.Context, input chan *Msg, concurrent int) chan *Msg {
-	output := make(chan *Msg)
-	for i := 0 ; i < concurrent ; i ++ {
-		go work(stopCtx, input, output)
-	}
-
-	return output
-}
-
-//func work(ctx context.Context, input chan *Msg, output chan *Msg) {
-//	for {
-//		select {
-//		case msg := <-input:
-//			err := handle(msg)
-//			if err != nil {
-//				output <- msg
-//			}
-//		case <-ctx.Done():
-//			return
-//		}
-//	}
-//}
 
 func handle(m *Msg) error {
 	return nil
 }
-
-type Fetcher struct {
-	queueName string
-	stopCtx context.Context
-	messages chan *Msg
-	confirms chan *Msg
-}
-
-func (f *Fetcher) DoFetch() {}
 
 type Msg struct {
 	original string
