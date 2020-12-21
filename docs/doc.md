@@ -78,3 +78,11 @@
         - [ ] add publisher function
     * [ ] Add setting options for request read and write timeout
     * [ ] Add setting options for run mode
+    * [ ] Standardize log format
+    
+---
+### Next Jobs
+* [ ] Test mailer
+* [ ] Test Worker
+* [ ] Worker handler error job
+* [ ] Queue dispatcher
