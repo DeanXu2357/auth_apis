@@ -56,14 +56,25 @@
 * [x] double check assertion of "smartystreets/assertions" usage  
     and replace with "testify/assert"
 * [ ] add command to handle job
-* [ ] refactoring lib file structure  
-    Ex: lib/ -> config/ -> config.go
-* [ ] refactor lib/asseration name to assertion
-* [ ] Refresh database in sequence
-    - [ ] add redis image
-    - [ ] add redis connection
-    - [ ] add publisher function
+  - [ ] Worker
+    - [x] handle job
+    - [ ] handle error and retry
+  - [ ] Send to queue
+  - [ ] email sending services
 * [ ] verify api
 * [ ] ~~rabbitmq connection~~ 
 * [ ] docker-compose.yml health check if db ready
 * [ ] add grpc protocal
+* [ ] Log file writing
+  - [ ] usage of project `https://github.com/natefinch/lumberjack`
+  - [ ] log level
+* [ ] Refactoring
+    * [ ] refactoring lib file structure  
+        Ex: lib/ -> config/ -> config.go
+    * [ ] refactor lib/asseration name to assertion
+    * [ ] Refresh database in sequence
+        - [ ] add redis image
+        - [ ] add redis connection
+        - [ ] add publisher function
+    * [ ] Add setting options for request read and write timeout
+    * [ ] Add setting options for run mode

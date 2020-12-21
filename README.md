@@ -7,6 +7,14 @@
 * Run test (因為與資料庫做整合測試，在 refresh db 時不鎖定 parallel 會出問題)
 `go test -p 1 ./...`
 
+## Commands
+* `./main serve`
+* `./main work:email`
+* `./main migrate`
+* `./main migrate:rollback [steps, default all]` 
+* `./main migrate:refresh`
+* `./main migrate:make [make params]`
+
 ## About Migrate  
 `https://github.com/golang-migrate/migrate/tree/master/cmd/migrate`
 * migrate from local 
