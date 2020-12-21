@@ -14,6 +14,13 @@ redis_addr: "redis:6379"
 redis_password:
 redis_db:
 
+email:
+  host:
+  port:
+  is_ssl:
+  user_name:
+  password:
+
 queue:
   mail_queue:
     redis_db: 0
