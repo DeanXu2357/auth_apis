@@ -2,7 +2,6 @@ package email
 
 import (
 	"crypto/tls"
-	"fmt"
 	"github.com/spf13/viper"
 	"gopkg.in/gomail.v2"
 	"log"

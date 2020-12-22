@@ -1,7 +1,7 @@
 package handler_tests
 
 import (
-	handlersv1 "auth/handlers/v1"
+	"auth/handlers/v1"
 	"auth/lib"
 	"auth/models"
 	"auth/tests"
@@ -18,7 +18,7 @@ func Test_RegisterSuccess(t *testing.T) {
 	email := "dean.dh@gmail.com"
 	password := "password"
 
-	user, err := handlersv1.Register(name, email, password, db)
+	user, err := handlers_v1.Register(name, email, password, db)
 
 	assert.Nil(t, err)
 	assert.IsType(t, &models.User{}, user)
