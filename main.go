@@ -3,6 +3,7 @@ package main
 import (
 	"auth/cmd/sending_email"
 	"auth/lib"
+	"auth/lib/email"
 	"auth/routes"
 	"context"
 	"fmt"
@@ -49,8 +50,20 @@ func generateTestCmd() *cobra.Command {
 		Short: "for testing",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("test success")
-			fmt.Println(viper.GetString("queue.mail_queue.worker_count"))
+
+			testSendEmail()
 		},
+	}
+}
+
+func testSendEmail() {
+	info := email.NewInfo()
+	err := email.NewEmail(info).SendMail(
+		[]string{"jasugun0000+receiver@gmail.com"},
+		"test mail subject",
+		"this is a test mail")
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -92,8 +105,6 @@ func runServer(db *gorm.DB) {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown: ", err)
 	}
-
-	// "doing events after shutdown"
 
 	log.Println("Server exiting")
 }

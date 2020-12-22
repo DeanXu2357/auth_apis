@@ -60,7 +60,7 @@
     - [x] handle job
     - [ ] handle error and retry
   - [ ] Send to queue
-  - [ ] email sending services
+  - [x] email sending services
 * [ ] verify api
 * [ ] ~~rabbitmq connection~~ 
 * [ ] docker-compose.yml health check if db ready
@@ -82,7 +82,6 @@
     
 ---
 ### Next Jobs
-* [ ] Test mailer
 * [ ] Test Worker
 * [ ] Worker handler error job
 * [ ] Queue dispatcher

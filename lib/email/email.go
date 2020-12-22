@@ -2,6 +2,7 @@ package email
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/spf13/viper"
 	"gopkg.in/gomail.v2"
 	"log"
@@ -14,8 +15,8 @@ type Email struct {
 type SMTPInfo struct {
 	Host string
 	Port int
-	IsSSl bool
-	UserName string
+	IsSSl bool `mapstructure:"is_ssl"`
+	UserName string `mapstructure:"user_name"`
 	Password string
 	From string
 }
@@ -24,9 +25,9 @@ func NewEmail(info *SMTPInfo) *Email {
 	return &Email{info}
 }
 
-func (e *Email) SendMail(from string, to []string, subject string, body string) error {
+func (e *Email) SendMail(to []string, subject string, body string) error {
 	m := gomail.NewMessage()
-	m.SetHeader("from", from)
+	m.SetHeader("From", e.From)
 	m.SetHeader("To", to...)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", body)
@@ -36,9 +37,9 @@ func (e *Email) SendMail(from string, to []string, subject string, body string) 
 	return dialer.DialAndSend(m)
 }
 
-func ReadConfig() *SMTPInfo {
+func NewInfo() *SMTPInfo {
 	i := &SMTPInfo{}
-	err := viper.Unmarshal(i)
+	err := viper.UnmarshalKey("email", &i)
 	if err != nil {
 		log.Fatal(err)
 	}

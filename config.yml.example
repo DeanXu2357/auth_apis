@@ -3,16 +3,14 @@ app_name: auth_api
 server_port: 8080
 
 db_host: db
-#dbhost: 127.0.0.1
 db_port: 5432
-#dbport: 45487
 db_name: auth
 db_user: postgres
 db_password: fortestpwd
 
 redis_addr: "redis:6379"
 redis_password:
-redis_db:
+redis_db: 0
 
 email:
   host:
@@ -20,6 +18,7 @@ email:
   is_ssl:
   user_name:
   password:
+  from:
 
 queue:
   mail_queue:
