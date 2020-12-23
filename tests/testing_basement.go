@@ -3,6 +3,7 @@ package tests
 
 import (
 	"auth/lib"
+	"auth/lib/event_listener"
 	"auth/routes"
 	"bytes"
 	"fmt"
@@ -48,7 +49,9 @@ func PrepareServer() *gin.Engine {
 	lib.InitialConfigurations()
 	RefreshDatabase()
 	db := lib.InitialDatabase()
-	router := routes.InitRouter(db)
+	dispatcher := event_listener.NewDispatcher()
+	router := routes.InitRouter(db, dispatcher)
+
 	return router
 }
 

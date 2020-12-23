@@ -2,14 +2,16 @@ package routes
 
 import (
 	handlerV1 "auth/handlers/v1"
+	"auth/lib/event_listener"
 	"auth/middlewares"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func InitRouter(db *gorm.DB) *gin.Engine {
+func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
 	r := gin.Default()
 	r.Use(middlewares.SetDB(db))
+	r.Use(middlewares.SetEventListener(d))
 
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")
@@ -18,7 +20,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 		emails := v1.Group("/email")
 		emails.POST("/register", handlerV1.RegisterByMail)
-		emails.POST("/resend", handlerV1.ResendMail)
+		//emails.POST("/resend", handlerV1.ResendMail)
 		emails.POST("/activate", handlerV1.ActivateEmailRegister)
 	}
 

@@ -34,9 +34,12 @@ func Register(name string, email string, password string, db *gorm.DB) (*models.
 		return nil, err
 	}
 
-	// todo: send mail
-
 	tx.Commit()
 
 	return user, nil
+}
+
+// lpush key_name value
+func dispatchMailQueue(email string, mType string) error {
+	return nil
 }

@@ -40,6 +40,8 @@ func RegisterByMail(c *gin.Context) {
 		}
 	}
 
+	// todo : email registered event
+
 	c.JSON(http.StatusOK, gin.H{"message": "success", "user_id": user.ID})
 	return
 }

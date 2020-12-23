@@ -2,8 +2,11 @@ package main
 
 import (
 	"auth/cmd/sending_email"
+	"auth/events"
 	"auth/lib"
 	"auth/lib/email"
+	"auth/lib/event_listener"
+	"auth/listeners"
 	"auth/routes"
 	"context"
 	"fmt"
@@ -30,7 +33,22 @@ func main() {
 		Short: "run server",
 		Run: func(cmd *cobra.Command, args []string) {
 			db := lib.InitialDatabase()
-			runServer(db)
+
+			dispatcher := event_listener.NewDispatcher()
+			dispatcher.AttachListener(events.EmailRegistered, listeners.SendMailListener{})
+			dispatcher.Consume()
+
+			runServer(db, dispatcher)
+
+			defer func() {
+				log.Print("After shutdown server, close other objects")
+				dispatcher.Close()
+				sqlDB, _ := db.DB()
+				err := sqlDB.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 		},
 	}
 
@@ -51,7 +69,18 @@ func generateTestCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("test success")
 
-			testSendEmail()
+			dispatcher := event_listener.NewDispatcher()
+			dispatcher.AttachListener(events.Test, listeners.PrintMsgListener{})
+			dispatcher.Consume()
+			defer dispatcher.Close()
+
+			log.Print("do something")
+			var e events.TestEvent
+			dispatcher.Dispatch(e)
+			log.Print("do rest of works")
+
+			time.Sleep(5*time.Second)
+			//testSendEmail()
 		},
 	}
 }
@@ -67,8 +96,8 @@ func testSendEmail() {
 	}
 }
 
-func runServer(db *gorm.DB) {
-	router := routes.InitRouter(db)
+func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
+	router := routes.InitRouter(db, dispatcher)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%v", viper.Get("server_port")),
@@ -83,28 +112,13 @@ func runServer(db *gorm.DB) {
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shutdown the server with
-	// a timeout of 5 seconds.
 	quit := make(chan os.Signal, 1)
-	// kill (no param) default send syscall.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-
-	sqlDB, _ := db.DB()
-	err := sqlDB.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown: ", err)
 	}
-
-	log.Println("Server exiting")
 }
