@@ -68,7 +68,8 @@ func GenerateCommand() *cobra.Command {
 func fetch(ctx context.Context, redis *redis.Pool) <-chan *Msg {
 	out := make(chan *Msg)
 	go func() {
-		close(out)
+		defer close(out)
+
 		olds := fetchOldInprogress(redis)
 		for _, o := range olds {
 			out <- o
