@@ -18,7 +18,7 @@ type SendMailEvent interface {
 }
 
 func (l SendMailListener) Handle(e event_listener.Event) error {
-	i, ok := e.(SendMailEvent)
+	event, ok := e.(SendMailEvent)
 	if !ok {
 		log.Printf("type is %s \n", reflect.TypeOf(e))
 		return errors.New("Undefined event type")
@@ -26,9 +26,9 @@ func (l SendMailListener) Handle(e event_listener.Event) error {
 
 	info := email.NewInfo()
 	err := email.NewEmail(info).SendMail(
-		[]string{i.To()},
-		i.GetSubject(),
-		i.GetBody())
+		[]string{event.To()},
+		event.GetSubject(),
+		event.GetBody())
 	if err != nil {
 		return err
 	}

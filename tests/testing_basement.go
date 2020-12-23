@@ -2,12 +2,8 @@
 package tests
 
 import (
-	"auth/lib"
-	"auth/lib/event_listener"
-	"auth/routes"
 	"bytes"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
@@ -43,16 +39,6 @@ func RefreshDatabase() {
 		log.Printf("out:%s\nerr:%s\n", out.String(), stderr.String())
 		log.Panic(err)
 	}
-}
-
-func PrepareServer() *gin.Engine {
-	lib.InitialConfigurations()
-	RefreshDatabase()
-	db := lib.InitialDatabase()
-	dispatcher := event_listener.NewDispatcher()
-	router := routes.InitRouter(db, dispatcher)
-
-	return router
 }
 
 func Call(r http.Handler, method, path, body string) *httptest.ResponseRecorder {
