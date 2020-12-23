@@ -1,6 +1,8 @@
 package handlers_v1
 
 import (
+	"auth/events"
+	"auth/lib/event_listener"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -40,7 +42,8 @@ func RegisterByMail(c *gin.Context) {
 		}
 	}
 
-	// todo : email registered event
+	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
+	dispatcher.DispatchSync(events.NewEmailRegisteredEvent(*user))
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "user_id": user.ID})
 	return

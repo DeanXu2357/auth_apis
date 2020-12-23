@@ -71,7 +71,6 @@ func generateTestCmd() *cobra.Command {
 
 			dispatcher := event_listener.NewDispatcher()
 			dispatcher.AttachListener(events.Test, listeners.PrintMsgListener{})
-			dispatcher.Consume()
 			defer dispatcher.Close()
 
 			log.Print("do something")

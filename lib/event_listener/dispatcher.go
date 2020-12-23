@@ -25,8 +25,13 @@ func (d *Dispatcher) Fake() {
 	d.listeners = map[string][]Listener{}
 }
 
-func (d *Dispatcher) Dispatch(e Event) {
+func (d *Dispatcher) DispatchAsync(e Event) {
 	d.tasks <- e
+}
+
+func (d *Dispatcher) DispatchSync(e Event) {
+	eventName := e.GetName()
+	execute(d.listeners[eventName], e)
 }
 
 func (d *Dispatcher) Consume() {
