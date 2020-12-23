@@ -8,5 +8,6 @@ import (
 func SetDB(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("DB", db)
+		c.Next()
 	}
 }
