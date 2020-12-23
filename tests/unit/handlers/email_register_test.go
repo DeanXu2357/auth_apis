@@ -3,6 +3,7 @@ package handler_tests
 import (
 	"auth/handlers/v1"
 	"auth/lib"
+	"auth/lib/asseration"
 	"auth/models"
 	"auth/tests"
 	"github.com/stretchr/testify/assert"
@@ -22,5 +23,6 @@ func Test_RegisterSuccess(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.IsType(t, &models.User{}, user)
-	// todo: assert database has ...
+	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name":name}, db)
+	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email":email}, db)
 }
