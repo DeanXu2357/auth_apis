@@ -23,6 +23,6 @@ func Test_RegisterSuccess(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.IsType(t, &models.User{}, user)
-	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name":name}, db)
-	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email":email}, db)
+	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
+	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
 }

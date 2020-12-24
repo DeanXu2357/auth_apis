@@ -15,7 +15,7 @@ func Test_DatabaseHas(t *testing.T) {
 
 	mockT := new(testing.T)
 
-	if asseration.DatabaseHas(mockT, &models.User{}, map[string]string{},db) {
+	if asseration.DatabaseHas(mockT, &models.User{}, map[string]string{}, db) {
 		t.Error("should return false")
 	}
 

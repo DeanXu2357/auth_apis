@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func InitialConfigurations()  {
+func InitialConfigurations() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("/go/src/app")
 	viper.AutomaticEnv()

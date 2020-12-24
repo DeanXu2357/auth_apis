@@ -7,7 +7,7 @@ type EmailRegisteredEvent struct {
 }
 
 func NewEmailRegisteredEvent(u models.User) EmailRegisteredEvent {
-	return EmailRegisteredEvent{user:u}
+	return EmailRegisteredEvent{user: u}
 }
 
 func (e EmailRegisteredEvent) GetName() string {
@@ -29,4 +29,3 @@ func (e EmailRegisteredEvent) GetSubject() string {
 func (e EmailRegisteredEvent) GetBody() string {
 	return "click here to verify your email address"
 }
-

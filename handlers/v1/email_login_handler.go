@@ -10,13 +10,13 @@ import (
 )
 
 type registerByMailInput struct {
-	Name string `json:"name" binding:"required"`
-	Email string `json:"email" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type verifyMailLogin struct {
-	Email string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -62,7 +62,7 @@ func VerifyMailLogin(c *gin.Context) {
 	//session :=
 }
 
-func ResendMail(c *gin.Context)  {
+func ResendMail(c *gin.Context) {
 	//
 }
 

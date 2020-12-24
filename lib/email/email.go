@@ -12,12 +12,12 @@ type Email struct {
 }
 
 type SMTPInfo struct {
-	Host string
-	Port int
-	IsSSl bool `mapstructure:"is_ssl"`
+	Host     string
+	Port     int
+	IsSSl    bool   `mapstructure:"is_ssl"`
 	UserName string `mapstructure:"user_name"`
 	Password string
-	From string
+	From     string
 }
 
 func NewEmail(info *SMTPInfo) *Email {

@@ -60,5 +60,5 @@ func prepareCommandString() (string, []string) {
 		viper.GetString("db_port"),
 		viper.GetString("db_name"))
 
-	return "./cmd/migrate.linux-amd64", []string{"-database" ,connection, "-verbose", "-path", "./db/migrations/"}
+	return "./cmd/migrate.linux-amd64", []string{"-database", connection, "-verbose", "-path", "./db/migrations/"}
 }

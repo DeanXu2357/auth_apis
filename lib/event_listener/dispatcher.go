@@ -6,7 +6,7 @@ import (
 
 type Dispatcher struct {
 	listeners map[string][]Listener
-	tasks chan Event
+	tasks     chan Event
 }
 
 type Listener interface {
