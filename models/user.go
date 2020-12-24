@@ -20,7 +20,7 @@ type User struct {
 	DeletedAt time.Time
 }
 
-func (u *User)BeforeCreate(tx *gorm.DB) (err error) {
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.ID != reflect.Zero(reflect.TypeOf(u.ID)).Interface() {
 		return
 	}
