@@ -1,8 +1,9 @@
 package lib
 
 import (
-	"auth/lib"
-	"auth/lib/asseration"
+	"auth/lib/assertion"
+	"auth/lib/config"
+	"auth/lib/database"
 	"auth/lib/factory"
 	"auth/models"
 	"auth/tests"
@@ -21,16 +22,16 @@ func Test_FactoryGenerate(t *testing.T) {
 }
 
 func Test_FactoryCreateOne(t *testing.T) {
-	lib.InitialConfigurations()
+	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := lib.InitialDatabase()
+	db := database.InitialDatabase()
 
 	name := "dean"
 	fakeUsers := factory.Create(db, &models.User{}, map[string]interface{}{"Name": name}, 1)
 
 	fakeUser := fakeUsers[0]
 	assert.Equal(t, name, reflect.ValueOf(fakeUser).Elem().FieldByName("Name").Interface().(string))
-	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
+	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
 }
 
 // todo: add Test_FactoryCreateMulti

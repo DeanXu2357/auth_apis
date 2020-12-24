@@ -1,8 +1,9 @@
 package integration
 
 import (
-	"auth/lib"
-	"auth/lib/asseration"
+	"auth/lib/assertion"
+	"auth/lib/config"
+	"auth/lib/database"
 	"auth/lib/event_listener"
 	"auth/models"
 	"auth/routes"
@@ -15,9 +16,9 @@ import (
 )
 
 func Test_Health(t *testing.T) {
-	lib.InitialConfigurations()
+	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := lib.InitialDatabase()
+	db := database.InitialDatabase()
 	dispatcher := event_listener.NewDispatcher()
 	router := routes.InitRouter(db, dispatcher)
 
@@ -28,9 +29,9 @@ func Test_Health(t *testing.T) {
 }
 
 func Test_RegisterByEmailSuccess(t *testing.T) {
-	lib.InitialConfigurations()
+	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := lib.InitialDatabase()
+	db := database.InitialDatabase()
 	dispatcher := event_listener.NewDispatcher()
 	router := routes.InitRouter(db, dispatcher)
 
@@ -43,8 +44,8 @@ func Test_RegisterByEmailSuccess(t *testing.T) {
 
 	log.Printf("response body : " + w.Body.String())
 	assert.Contains(t, w.Body.String(), "success")
-	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name":name}, db)
-	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email":email}, db)
+	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
+	assertion.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
 }
 
 // todo: assert handler be triggered

@@ -1,4 +1,4 @@
-package asseration
+package assertion
 
 import (
 	"auth/models"

@@ -3,7 +3,8 @@ package main
 import (
 	"auth/cmd/sending_email"
 	"auth/events"
-	"auth/lib"
+	"auth/lib/config"
+	"auth/lib/database"
 	"auth/lib/email"
 	"auth/lib/event_listener"
 	"auth/listeners"
@@ -26,13 +27,13 @@ func main() {
 		Short: "Console commands for this project",
 	}
 
-	lib.InitialConfigurations()
+	config.InitialConfigurations()
 
 	serveCmd := &cobra.Command{
 		Use: "serve",
 		Short: "run server",
 		Run: func(cmd *cobra.Command, args []string) {
-			db := lib.InitialDatabase()
+			db := database.InitialDatabase()
 
 			dispatcher := event_listener.NewDispatcher()
 			dispatcher.AttachListener(events.EmailRegistered, listeners.SendMailListener{})

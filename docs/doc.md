@@ -112,9 +112,9 @@
 * [ ] Finish async mailer flow
 * [ ] Worker handler error job
 * [ ] Refactoring
-    * [ ] refactoring lib file structure  
+    * [x] refactoring lib file structure  
         Ex: lib/ -> config/ -> config.go
-    * [ ] refactor lib/asseration name to assertion
+    * [x] refactor lib/asseration name to assertion
     * [ ] Refresh database in sequence
     * [ ] Add setting options for request read and write timeout
     * [ ] Add setting options for run mode

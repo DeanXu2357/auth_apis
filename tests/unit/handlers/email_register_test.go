@@ -2,8 +2,9 @@ package handler_tests
 
 import (
 	"auth/handlers/v1"
-	"auth/lib"
-	"auth/lib/asseration"
+	"auth/lib/assertion"
+	"auth/lib/config"
+	"auth/lib/database"
 	"auth/models"
 	"auth/tests"
 	"github.com/stretchr/testify/assert"
@@ -11,9 +12,9 @@ import (
 )
 
 func Test_RegisterSuccess(t *testing.T) {
-	lib.InitialConfigurations()
+	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := lib.InitialDatabase()
+	db := database.InitialDatabase()
 
 	name := "poyu"
 	email := "dean.dh@gmail.com"
@@ -23,6 +24,6 @@ func Test_RegisterSuccess(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.IsType(t, &models.User{}, user)
-	asseration.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
-	asseration.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
+	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
+	assertion.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
 }
