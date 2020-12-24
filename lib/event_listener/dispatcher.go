@@ -29,7 +29,7 @@ func (d *Dispatcher) DispatchAsync(e Event) {
 	d.tasks <- e
 }
 
-func (d *Dispatcher) DispatchSync(e Event) {
+func (d *Dispatcher) Dispatch(e Event) {
 	eventName := e.GetName()
 	execute(d.listeners[eventName], e)
 }

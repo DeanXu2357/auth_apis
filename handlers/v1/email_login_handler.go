@@ -43,7 +43,7 @@ func RegisterByMail(c *gin.Context) {
 	}
 
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
-	dispatcher.DispatchSync(events.NewEmailRegisteredEvent(*user))
+	dispatcher.Dispatch(events.NewEmailRegisteredEvent(*user))
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "user_id": user.ID})
 	return
