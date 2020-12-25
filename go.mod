@@ -1,6 +1,6 @@
 module auth
 
-go 1.12
+go 1.15
 
 require (
 	github.com/brianvoe/gofakeit/v5 v5.11.1
