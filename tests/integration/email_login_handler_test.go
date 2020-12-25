@@ -43,7 +43,7 @@ func Test_RegisterByEmailSuccess(t *testing.T) {
 	w := tests.Call(router, "POST", "/api/v1/email/register", string(body))
 
 	log.Printf("response body : " + w.Body.String())
-	assert.Contains(t, w.Body.String(), "success")
+	assert.Contains(t, w.Body.String(), "ok")
 	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
 	assertion.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
 }

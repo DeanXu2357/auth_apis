@@ -3,12 +3,12 @@ package handlers_v1
 import (
 	"auth/events"
 	"auth/lib/event_listener"
+	"auth/lib/helpers"
 	"auth/models"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
 type registerByMailInput struct {
@@ -27,8 +27,7 @@ const EmailAlreadyRegistered = "email_already_registered"
 func RegisterByMail(c *gin.Context) {
 	var input registerByMailInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		log.Print(err)
-		c.JSON(http.StatusBadRequest, gin.H{"status": 40022, "message": "validation failed"})
+		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
 
@@ -36,10 +35,10 @@ func RegisterByMail(c *gin.Context) {
 	if err != nil {
 		switch err.Error() {
 		case EmailAlreadyRegistered:
-			c.JSON(http.StatusBadRequest, gin.H{"status": 40009, "message": "email is already registered"})
+			helpers.GenerateResponse(c, helpers.ReturnDuplicate, nil)
 			return
 		default:
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
 			return
 		}
 	}
@@ -47,29 +46,34 @@ func RegisterByMail(c *gin.Context) {
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
 	dispatcher.Dispatch(events.NewEmailRegisteredEvent(*user))
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "user_id": user.ID})
+	helpers.GenerateResponse(c,helpers.ReturnOK, map[string]interface{}{"user_id": user.ID, "email": input.Email})
 	return
 }
 
 func VerifyMailLogin(c *gin.Context) {
 	var input verifyMailLogin
 	if err := c.ShouldBindJSON(&input); err != nil {
-		log.Print(err)
-		c.JSON(http.StatusBadRequest, gin.H{"status": 40022, "message": "validation failed"})
+		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
 
 	var loginInfo models.EmailLogin
 	db := c.MustGet("DB").(*gorm.DB)
-	db.Where("email = ?", input.Email).First(&loginInfo)
+	result := db.Where("email = ?", input.Email).First(&loginInfo)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
+		return
+	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(loginInfo.Password), []byte(input.Password)); err != nil {
-		// todo: handle error
+		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
+		return
 	}
 
 	// todo: produce jwt token
 
-	// return token
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 }
 
 func ActivateEmailRegister(c *gin.Context) {
