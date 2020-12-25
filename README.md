@@ -1,7 +1,7 @@
 # Api 練習 -- 登入微服務
 ## 啟動專案
 * 初次啟動  
-`go build -o main . && sudo docker-compose up -d`
+`sudo docker-compose up -d`
 * 變更後重新編譯  
 `sudo docker-compose exec app go build -o main && sudo docker-compose restart  app`
 * Run test (因為與資料庫做整合測試，在 refresh db 時不鎖定 parallel 會出問題)

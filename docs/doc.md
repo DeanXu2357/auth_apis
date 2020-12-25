@@ -129,4 +129,5 @@
 * [ ] Test EventListener - sync dispatch if triggered
 * [x] Redesign database schema
 * [x] Document flow and new schema
-* [ ] Standardize log format
+* [ ] Standardize log format, wait for select a library
+* [ ] jwt library select 
