@@ -7,7 +7,7 @@ import (
 
 func SetDB(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("DB", db)
+		c.Set("DB", db.Session(&gorm.Session{NewDB: true}))
 		c.Next()
 	}
 }

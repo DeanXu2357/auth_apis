@@ -3,7 +3,9 @@ package handlers_v1
 import (
 	"auth/events"
 	"auth/lib/event_listener"
+	"auth/models"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -50,20 +52,24 @@ func RegisterByMail(c *gin.Context) {
 }
 
 func VerifyMailLogin(c *gin.Context) {
-	var input registerByMailInput
+	var input verifyMailLogin
 	if err := c.ShouldBindJSON(&input); err != nil {
 		log.Print(err)
 		c.JSON(http.StatusBadRequest, gin.H{"status": 40022, "message": "validation failed"})
 		return
 	}
 
-	//db := c.MustGet("DB").(*gorm.DB)
+	var loginInfo models.EmailLogin
+	db := c.MustGet("DB").(*gorm.DB)
+	db.Where("email = ?", input.Email).First(&loginInfo)
 
-	//session :=
-}
+	if err := bcrypt.CompareHashAndPassword([]byte(loginInfo.Password), []byte(input.Password)); err != nil {
+		// todo: handle error
+	}
 
-func ResendMail(c *gin.Context) {
-	//
+	// todo: produce jwt token
+
+	// return token
 }
 
 func ActivateEmailRegister(c *gin.Context) {
