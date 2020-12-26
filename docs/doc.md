@@ -88,6 +88,7 @@
     * [x] factory
     * [ ] Worker test
     * [ ] EventListener test (async)
+    * [ ] Test EventListener - sync dispatch if triggered
     * [x] lib/email test by human , success
 * [x] Queue dispatcher (sync and async both finished)
 * [x] double check assertion of "smartystreets/assertions" usage  
@@ -103,14 +104,20 @@
   - [ ] Send to queue
   - [x] email sending services
 * [ ] verify api
-* [ ] ~~rabbitmq connection~~ 
-* [ ] docker-compose.yml health check if db ready
-* [ ] add grpc protocal
 * [ ] Log file writing
   - [ ] usage of project `https://github.com/natefinch/lumberjack`
-  - [ ] log level
-* [ ] Finish async mailer flow
-* [ ] Worker handler error job
+  - [ ] log level -- integration with zap `https://github.com/uber-go/zap`
+* [ ] backlog 
+    - [ ] Worker handler error job
+    - [ ] Finish async mailer flow
+* [ ] Wanted Feature
+    - [ ] go mod cache for images
+    - [ ] add grpc protocal
+    - [ ] ~~rabbitmq integration~~
+    - [ ] docker-compose.yml health check if db ready
+    - [ ] my own recovery middleware
+        1. email notify developer or sentry
+        2. recovery and log with informations like error level 
 * [ ] Refactoring
     * [x] refactoring lib file structure  
         Ex: lib/ -> config/ -> config.go
@@ -119,6 +126,8 @@
     * [ ] Add setting options for request read and write timeout
     * [ ] Add setting options for run mode
     * [ ] Standardize log format
+    * [x] Document flow and new schema
+    * [x] Redesign database schema
     * [ ] add migration command
         - [ ] up
         - [ ] down
@@ -126,8 +135,5 @@
     
 ---
 ### Next Jobs
-* [ ] Test EventListener - sync dispatch if triggered
-* [x] Redesign database schema
-* [x] Document flow and new schema
 * [ ] Standardize log format, wait for select a library
 * [ ] jwt library select 

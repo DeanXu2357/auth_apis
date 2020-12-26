@@ -49,3 +49,5 @@ func Test_RegisterByEmailSuccess(t *testing.T) {
 }
 
 // todo: assert handler be triggered
+// todo: test email has already registered
+// todo: test validation failed when register

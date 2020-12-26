@@ -27,3 +27,5 @@ func Test_RegisterSuccess(t *testing.T) {
 	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
 	assertion.DatabaseHas(t, &models.EmailLogin{}, map[string]string{"email": email}, db)
 }
+
+// todo: test email has already registered
