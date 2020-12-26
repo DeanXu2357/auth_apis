@@ -8,8 +8,11 @@ import (
 	"log"
 )
 
+var (
+	ErrEmailAlreadyRegistered = errors.New("email already registered")
+)
+
 func Register(name string, email string, password string, db *gorm.DB) (*models.User, error) {
-	// todo : find a transaction manager library
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -21,11 +24,12 @@ func Register(name string, email string, password string, db *gorm.DB) (*models.
 	user := &models.User{Name: name, Email: email}
 	if err := tx.Create(user).Error; err != nil {
 		tx.Rollback()
-		return nil, errors.New(EmailAlreadyRegistered)
+		return nil, ErrEmailAlreadyRegistered
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 	if err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 

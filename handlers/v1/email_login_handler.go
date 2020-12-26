@@ -33,14 +33,13 @@ func RegisterByMail(c *gin.Context) {
 
 	user, err := Register(input.Name, input.Email, input.Password, c.MustGet("DB").(*gorm.DB))
 	if err != nil {
-		switch err.Error() {
-		case EmailAlreadyRegistered:
+		if errors.Is(err, ErrEmailAlreadyRegistered) {
 			helpers.GenerateResponse(c, helpers.ReturnDuplicate, nil)
 			return
-		default:
-			helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
-			return
 		}
+
+		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
+		return
 	}
 
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
