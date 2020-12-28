@@ -12,6 +12,19 @@ redis_addr: "redis:6379"
 redis_password:
 redis_db: 0
 
+activate_auth:
+  public_key:
+  private_key:
+  issuer:
+  expire:
+  refresh_expire:
+
+login_auth:
+  public_key:
+  private_key:
+    issuer:
+    expire:
+
 email:
   host:
   port:
