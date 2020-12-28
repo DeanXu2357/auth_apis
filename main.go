@@ -102,7 +102,7 @@ func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%v", viper.Get("server_port")),
 		Handler:      router,
-		ReadTimeout:  10 * time.Second,
+		ReadTimeout:  10 * time.Second, // todo : be config
 		WriteTimeout: 10 * time.Second,
 	}
 

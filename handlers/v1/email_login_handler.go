@@ -11,21 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type registerByMailInput struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type verifyMailLogin struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-const EmailAlreadyRegistered = "email_already_registered"
-
 func RegisterByMail(c *gin.Context) {
-	var input registerByMailInput
+	var input struct {
+		Name     string `json:"name" binding:"required"`
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
@@ -42,15 +33,21 @@ func RegisterByMail(c *gin.Context) {
 		return
 	}
 
+	// todo: produce token for activation and email_verify table create a row
+	token := ""
+
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
-	dispatcher.Dispatch(events.NewEmailRegisteredEvent(*user))
+	dispatcher.Dispatch(events.EmailRegisteredEvent{User:*user, Token: token})
 
 	helpers.GenerateResponse(c,helpers.ReturnOK, map[string]interface{}{"user_id": user.ID, "email": input.Email})
 	return
 }
 
 func VerifyMailLogin(c *gin.Context) {
-	var input verifyMailLogin
+	var input struct {
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
@@ -70,7 +67,7 @@ func VerifyMailLogin(c *gin.Context) {
 		return
 	}
 
-	// todo: produce jwt token
+	// todo: produce jwt token for authentication
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 }

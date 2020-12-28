@@ -110,6 +110,7 @@
 * [ ] backlog 
     - [ ] Worker handler error job
     - [ ] Finish async mailer flow
+    - [ ] Optimus config 
 * [ ] Wanted Feature
     - [ ] go mod cache for images
     - [ ] add grpc protocal

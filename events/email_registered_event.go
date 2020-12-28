@@ -3,11 +3,8 @@ package events
 import "auth/models"
 
 type EmailRegisteredEvent struct {
-	user models.User
-}
-
-func NewEmailRegisteredEvent(u models.User) EmailRegisteredEvent {
-	return EmailRegisteredEvent{user: u}
+	User  models.User
+	Token string
 }
 
 func (e EmailRegisteredEvent) GetName() string {
@@ -15,11 +12,11 @@ func (e EmailRegisteredEvent) GetName() string {
 }
 
 func (e EmailRegisteredEvent) GetUser() models.User {
-	return e.user
+	return e.User
 }
 
 func (e EmailRegisteredEvent) To() string {
-	return e.user.Email
+	return e.User.Email
 }
 
 func (e EmailRegisteredEvent) GetSubject() string {
@@ -27,5 +24,6 @@ func (e EmailRegisteredEvent) GetSubject() string {
 }
 
 func (e EmailRegisteredEvent) GetBody() string {
+	// todo: combine activate url with e.Token
 	return "click here to verify your email address"
 }

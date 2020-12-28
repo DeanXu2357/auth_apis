@@ -3,6 +3,7 @@ package handlers_v1
 import (
 	"auth/models"
 	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
@@ -30,12 +31,12 @@ func Register(name string, email string, password string, db *gorm.DB) (*models.
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 	if err != nil {
 		tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("Error due to :  %w", err)
 	}
 
 	if err := tx.Create(&models.EmailLogin{Email: email, Password: string(hashedPassword)}).Error; err != nil {
 		tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("Error due to :  %w", err)
 	}
 
 	tx.Commit()

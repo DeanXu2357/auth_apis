@@ -5,6 +5,23 @@ import (
 	"log"
 )
 
+var (
+	LoginAuth    LoginAuthSettings
+	ActivateAuth ActivateAuthSettings
+)
+
+func init() {
+	InitialConfigurations()
+
+	if err := viper.UnmarshalKey("activate_auth", &ActivateAuth); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := viper.UnmarshalKey("login_auth", &LoginAuth); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func InitialConfigurations() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("/go/src/app")
