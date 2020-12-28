@@ -138,3 +138,7 @@
 ### Next Jobs
 * [ ] Standardize log format, wait for select a library
 * [ ] jwt library select 
+* [ ] table reschema 
+    - add relation between user , email_verify
+    - email_verify add column user_id, and foreign key
+* [ ] add new helpers function GetDB

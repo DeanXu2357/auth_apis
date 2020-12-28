@@ -22,7 +22,8 @@ func RegisterByMail(c *gin.Context) {
 		return
 	}
 
-	user, err := Register(input.Name, input.Email, input.Password, c.MustGet("DB").(*gorm.DB))
+	db := c.MustGet("DB").(*gorm.DB)
+	user, err := Register(input.Name, input.Email, input.Password, db)
 	if err != nil {
 		if errors.Is(err, ErrEmailAlreadyRegistered) {
 			helpers.GenerateResponse(c, helpers.ReturnDuplicate, nil)
@@ -33,13 +34,17 @@ func RegisterByMail(c *gin.Context) {
 		return
 	}
 
-	// todo: produce token for activation and email_verify table create a row
-	token := ""
+	newSession := db.Session(&gorm.Session{NewDB: true})
+	token, err := GenerateActivationToken(user.Email, newSession)
+	if err != nil {
+		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
+		return
+	}
 
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
-	dispatcher.Dispatch(events.EmailRegisteredEvent{User:*user, Token: token})
+	dispatcher.Dispatch(events.EmailRegisteredEvent{User: *user, Token: token})
 
-	helpers.GenerateResponse(c,helpers.ReturnOK, map[string]interface{}{"user_id": user.ID, "email": input.Email})
+	helpers.GenerateResponse(c, helpers.ReturnOK, map[string]interface{}{"user_id": user.ID, "email": input.Email})
 	return
 }
 
@@ -70,8 +75,27 @@ func VerifyMailLogin(c *gin.Context) {
 	// todo: produce jwt token for authentication
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
 }
 
 func ActivateEmailRegister(c *gin.Context) {
-	//
+	var input struct {
+		Token string `form:"token"`
+	}
+	if err := c.ShouldBindQuery(&input); err != nil {
+		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
+		return
+	}
+
+	db := c.MustGet("DB").(*gorm.DB)
+
+	if Activate(input.Token, db) != nil {
+		// todo error handling
+	}
+
+	// update email_verify raw  verification false->true
+	// update email_login VerifiedAt now
+
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
 }

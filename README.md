@@ -20,6 +20,11 @@
 * migrate from local 
 `./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up`
 
+## generate key and secret 
+* ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
+* openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+* copy and paste to config.yml
+
 ## Q&A
 
 * migration failed (fix and force version)  

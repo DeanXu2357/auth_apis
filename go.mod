@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/brianvoe/gofakeit/v5 v5.11.1
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.1.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-gonic/gin v1.6.3

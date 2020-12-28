@@ -22,7 +22,7 @@ func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
 		emails.POST("/register", handlerV1.RegisterByMail)
 		emails.POST("/verify", handlerV1.VerifyMailLogin)
 		//emails.POST("/resend", handlerV1.ResendMail)
-		emails.POST("/activate", handlerV1.ActivateEmailRegister)
+		emails.GET("/activate", handlerV1.ActivateEmailRegister)
 	}
 
 	return r
