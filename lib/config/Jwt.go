@@ -1,17 +1,16 @@
 package config
 
 type LoginAuthSettings struct {
-	JwtSettings
-	RefreshExpire int32 `mapstructure:"refresh_expire"`
+	PrivateKey    string `mapstructure:"private_key"`
+	PublicKey     string `mapstructure:"public_key"`
+	Issuer        string
+	Expire        int64
+	RefreshExpire int64 `mapstructure:"refresh_expire"`
 }
 
 type ActivateAuthSettings struct {
-	JwtSettings
-}
-
-type JwtSettings struct {
-	Secret string
-	Key string
-	Issuer string
-	Expire int32
+	PrivateKey string `mapstructure:"private_key"`
+	PublicKey  string `mapstructure:"public_key"`
+	Issuer     string
+	Expire     int64
 }
