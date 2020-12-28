@@ -7,11 +7,18 @@ import (
 	"time"
 )
 
+const (
+	MailTypeVerifyAccount = "verify"
+	MailTypeResetPassword = "reset"
+	VerifyFalse           = iota
+	VerifyTrue
+)
+
 type EmailVerify struct {
 	ID           uuid.UUID `gorm:"type:uuid;primary_key;" fake:"{uuid}"`
 	Email        string    `gorm:"type:string;size:128;not null" fake:"email"`
 	MailType     string    `gorm:"type:string;size:64:not null" fake:"{randomstring:[verify,reset]}"`
-	verification int8      `gorm:"type:int;"`
+	Verification int8      `gorm:"type:int;"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
@@ -26,5 +33,5 @@ func (u *EmailVerify) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 func (u EmailVerify) TableName() string {
-	return "users"
+	return "email_verify"
 }
