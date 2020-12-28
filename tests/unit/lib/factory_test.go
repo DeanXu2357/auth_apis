@@ -31,6 +31,7 @@ func Test_FactoryCreateOne(t *testing.T) {
 
 	fakeUser := fakeUsers[0]
 	assert.Equal(t, name, reflect.ValueOf(fakeUser).Elem().FieldByName("Name").Interface().(string))
+	assert.IsType(t, &models.User{}, fakeUser)
 	assertion.DatabaseHas(t, &models.User{}, map[string]string{"name": name}, db)
 }
 
