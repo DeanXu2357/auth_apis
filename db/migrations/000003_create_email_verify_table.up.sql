@@ -6,7 +6,10 @@ CREATE TABLE IF NOT EXISTS email_verify (
     user_id uuid,
     created_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT fk_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES users (id) ON DELETE CASCADE
 );
 
 COMMENT ON COLUMN email_verify.verification IS '0:未驗證, 1:已驗證';

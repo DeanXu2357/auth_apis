@@ -9,6 +9,7 @@ import (
 	//m "auth/models"
 )
 
+// Create generate fake data raw and insert into database
 func Create(db *gorm.DB, model interface{}, custom map[string]interface{}, number int) []interface{} {
 	models := Generate(model, custom, number)
 
@@ -24,6 +25,7 @@ func Create(db *gorm.DB, model interface{}, custom map[string]interface{}, numbe
 	return models
 }
 
+// Generate only generate fake data raw , but no insert
 func Generate(model interface{}, data map[string]interface{}, number int) []interface{} {
 	if number < 1 {
 		panic("number cannot less than 1")
