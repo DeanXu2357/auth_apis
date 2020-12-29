@@ -19,6 +19,7 @@ type EmailVerify struct {
 	Email        string    `gorm:"type:string;size:128;not null" fake:"email"`
 	MailType     string    `gorm:"type:string;size:64:not null" fake:"{randomstring:[verify,reset]}"`
 	Verification int8      `gorm:"type:int;"`
+	UserID 		 uuid.UUID `gorm:"type:uuid" fake:"{uuid}"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

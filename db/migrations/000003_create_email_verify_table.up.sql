@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS email_verify (
     email VARCHAR (128),
     mail_type VARCHAR (64),
     verification SMALLINT,
+    user_id uuid,
     created_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE,
     PRIMARY KEY (id)

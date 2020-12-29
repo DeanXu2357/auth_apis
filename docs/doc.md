@@ -49,7 +49,7 @@
     3. model email_login create
     4. model email_verify create
     5. send email
-        - url = `/api/v1/email/activate?token=` + token(使用 email_verify id as id to generate jwt token)
+        - url = `/api/v1/email/activate?token=` + token(use email_verify id as id to generate jwt token)
     6. user request verify url`/api/v1/email/activate` 
     7. parse token
     8. query email_verify by id , and verify
@@ -63,7 +63,7 @@
     1. request recovery password api `/api/v1/email/recovery`
     2. model email_verify create 
     3. send email
-        - url = `/api/v1/email/activate?token=` + token(使用 email_verify id as id to generate jwt token)    
+        - url = `/api/v1/email/activate?token=` + token(use email_verify id as id to generate jwt token)    
     4. request reset password api `/api/v1/email/reset`
     5. query email_verify by id
     6. verify
@@ -138,7 +138,4 @@
 ### Next Jobs
 * [ ] Standardize log format, wait for select a library
 * [ ] jwt library select 
-* [ ] table reschema 
-    - add relation between user , email_verify
-    - email_verify add column user_id, and foreign key
-* [ ] add new helpers function GetDB
+* [ ] add new helpers function GetNewDBSession
