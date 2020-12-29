@@ -4,7 +4,6 @@ import (
 	"github.com/brianvoe/gofakeit/v5"
 	"github.com/fatih/structs"
 	"gorm.io/gorm"
-	"log"
 	"reflect"
 	//m "auth/models"
 )
@@ -15,7 +14,7 @@ func Create(db *gorm.DB, model interface{}, custom map[string]interface{}, numbe
 
 	for _, m := range models {
 		m2 := structs.Map(m)
-		log.Println(m2)
+		//log.Println(m2)
 		db.Model(model).Create(m2)
 	}
 	// TODO: refactor this

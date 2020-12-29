@@ -35,7 +35,7 @@ func RegisterByMail(c *gin.Context) {
 	}
 
 	newSession := db.Session(&gorm.Session{NewDB: true})
-	token, err := GenerateActivationToken(user.Email, newSession)
+	token, err := GenerateActivationToken(user, newSession)
 	if err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
 		return
@@ -89,12 +89,21 @@ func ActivateEmailRegister(c *gin.Context) {
 
 	db := c.MustGet("DB").(*gorm.DB)
 
-	if Activate(input.Token, db) != nil {
-		// todo error handling
-	}
+	if err := Activate(input.Token, db); err != nil {
+		if errors.Is(err, ErrorTokenNotValidYet) {
+			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
+			return
+		} else if errors.Is(err, ErrorTokenExpired) {
+			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
+			return
+		} else if errors.Is(err, ErrorTokenMalformed) {
+			helpers.GenerateResponse(c, helpers.ReturnValidationFailed, err)
+			return
+		}
 
-	// update email_verify raw  verification false->true
-	// update email_login VerifiedAt now
+		helpers.GenerateResponse(c, helpers.ReturnInvalidToken, err)
+		return
+	}
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 	return

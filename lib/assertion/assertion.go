@@ -23,12 +23,17 @@ func DatabaseHas(t assert.TestingT, model interface{}, condition interface{}, db
 
 	result := db.Where(condition).Find(slice)
 	if result.RowsAffected <= 0 {
+		db.Find(slice)
+		var tableName string
+		if h, ok := model.(models.CustomModel); ok {
+			tableName = h.TableName()
+		}
 		return assert.Fail(
 			t,
 			fmt.Sprintf(
-				"Raws could not be found in %s\nRaws Found : \n%s",
-				reflect.TypeOf(model).Kind(),
-				getAdditionalInfo(model, db)),
+				"Raws could not be found in %s\nRaws Found : \n%s\n",
+				tableName,
+				slice),
 			msgAndArgs...)
 	}
 

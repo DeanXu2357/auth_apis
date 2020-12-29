@@ -51,4 +51,37 @@ func Test_GenerateActionToken(t *testing.T) {
 	)
 }
 
-// todo: Test_GenerateActionTokenParsable
+func Test_ActivateSuccess(t *testing.T) {
+	// Setup
+	config.InitialConfigurations()
+	tests.RefreshDatabase()
+
+	// Initial
+	db := database.InitialDatabase()
+	config.ActivateAuth = config.ActivateAuthSettings{PrivateKey: testPrivateKey, PublicKey: testPublicKey, Expire: 360}
+
+	// Arrange
+	fakeUsers := factory.Create(db, &models.User{}, map[string]interface{}{}, 1)
+	fakeUser := fakeUsers[0]
+	user, ok := fakeUser.(*models.User)
+	_ = factory.Create(db, &models.EmailLogin{}, map[string]interface{}{"Email": user.Email}, 1)
+	if !ok {
+		t.Error("Factory Error")
+	}
+
+	// Act
+	tokenString, gErr := handlers_v1.GenerateActivationToken(user, db.Session(&gorm.Session{NewDB: true}))
+	aErr := handlers_v1.Activate(tokenString, db.Session(&gorm.Session{NewDB: true}))
+
+	assert.Nil(t, gErr)
+	assert.Nil(t, aErr)
+	assertion.DatabaseHas(
+		t,
+		&models.EmailVerify{},
+		map[string]interface{}{
+			"email":        user.Email,
+			"user_id":      hex.EncodeToString(user.ID.Bytes()),
+			"verification": models.VerifyTrue},
+		db,
+	)
+}

@@ -5,6 +5,7 @@ import (
 	"auth/lib/helpers"
 	"auth/models"
 	"crypto/rsa"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
@@ -15,6 +16,13 @@ import (
 var (
 	signKey   *rsa.PrivateKey
 	verifyKey *rsa.PublicKey
+
+	ErrorDBUpdateFailed   = errors.New("DB update failed")
+	ErrorDBInsertFailed   = errors.New("DB insert failed")
+	ErrorTokenMalformed   = errors.New("token malformed")
+	ErrorTokenExpired     = errors.New("token expired")
+	ErrorTokenNotValidYet = errors.New("token no valid yet")
+	ErrorTokenInvalid     = errors.New("invalid token")
 )
 
 func init() {
@@ -30,11 +38,12 @@ func init() {
 	}
 }
 
-func GenerateActivationToken(email string, db *gorm.DB) (string, error) {
+func GenerateActivationToken(user *models.User, db *gorm.DB) (string, error) {
 	v := &models.EmailVerify{
-		Email:        email,
+		Email:        user.Email,
 		MailType:     models.MailTypeVerifyAccount,
 		Verification: models.VerifyFalse,
+		UserID:       user.ID,
 	}
 	if err := db.Create(v).Error; err != nil {
 		return "", fmt.Errorf("Insert failed :  %w", err)
@@ -42,11 +51,11 @@ func GenerateActivationToken(email string, db *gorm.DB) (string, error) {
 
 	now := time.Now()
 	claims := &jwt.StandardClaims{
-		Audience:  email,
+		Audience:  user.Email,
 		ExpiresAt: now.Add(time.Duration(config.ActivateAuth.Expire) * time.Second).Unix(),
 		Issuer:    "System",
 		IssuedAt:  now.Unix(),
-		NotBefore: now.Add(3 * time.Second).Unix(),
+		NotBefore: now.Unix(),
 		Subject:   "Account email verification",
 		Id:        helpers.UuidToShortString(v.ID),
 	}
@@ -65,22 +74,46 @@ func Activate(tokenString string, db *gorm.DB) error {
 	if !token.Valid {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				//todo: not evena token
-			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-				// todo : not in duration
+				return ErrorTokenMalformed
+			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				return ErrorTokenExpired
+			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
+				return ErrorTokenNotValidYet
 			}
 		}
-		// todo unknown error
+		return ErrorTokenInvalid
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if err := claims.Valid(); !ok || err != nil {
-		// todo unknown error
+		return ErrorTokenInvalid
 	}
 
-	//id, err := helpers.ShortStringToUuid()
+	jti := claims["jti"].(string)
+	id, err := helpers.ShortStringToUuid(jti)
 
-	//emailVerify :=
+	emailVerify := models.EmailVerify{ID: id}
+	result := db.First(&emailVerify)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return fmt.Errorf("data raw not exist : %w", ErrorTokenInvalid)
+	}
+
+	tx := db.Session(&gorm.Session{SkipDefaultTransaction: true})
+	defer func() {
+		if r := recover(); r != nil {
+			log.Print(r.(error))
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Model(&emailVerify).Update("Verification", models.VerifyTrue).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("%w\n%w", ErrorDBUpdateFailed, err)
+	}
+	if err := tx.Model(&models.EmailLogin{Email: emailVerify.Email}).Update("VerifiedAt", time.Now()).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("%w\n%w", ErrorDBUpdateFailed, err)
+	}
+	tx.Commit()
 
 	return nil
 }

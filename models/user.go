@@ -14,7 +14,7 @@ type CustomModel interface {
 type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;" fake:"{uuid}"`
 	Name      string    `gorm:"type:string;not null" fake:"{name}"`
-	Email     string    `gorm:"type:string;size:128;not null" fake:"email"`
+	Email     string    `gorm:"type:string;size:128;not null" fake:"{email}"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time
