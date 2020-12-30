@@ -1,6 +1,9 @@
 package events
 
-import "auth/models"
+import (
+	"auth/models"
+	"fmt"
+)
 
 type EmailRegisteredEvent struct {
 	User  models.User
@@ -24,6 +27,5 @@ func (e EmailRegisteredEvent) GetSubject() string {
 }
 
 func (e EmailRegisteredEvent) GetBody() string {
-	// todo: combine activate url with e.Token
-	return "click here to verify your email address"
+	return fmt.Sprintf("click here to verify your email address %s", e.Token)
 }
