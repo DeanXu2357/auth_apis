@@ -1,6 +1,7 @@
 package event_listener
 
 import (
+	"auth/lib/config"
 	"log"
 )
 
@@ -18,7 +19,7 @@ type Event interface {
 }
 
 func NewDispatcher() *Dispatcher {
-	return &Dispatcher{tasks: make(chan Event), listeners: make(map[string][]Listener, 0)}
+	return &Dispatcher{tasks: make(chan Event, config.EventListener.TaskLimit), listeners: make(map[string][]Listener, 0)}
 }
 
 func (d *Dispatcher) Fake() {
@@ -30,15 +31,19 @@ func (d *Dispatcher) DispatchAsync(e Event) {
 }
 
 func (d *Dispatcher) Dispatch(e Event) {
-	eventName := e.GetName()
-	execute(d.listeners[eventName], e)
+	execute(d.listeners[e.GetName()], e)
 }
 
 func (d *Dispatcher) Consume() {
+	for i := 0; i < config.EventListener.WorkerNumber; i++ {
+		createConsumer(d)
+	}
+}
+
+func createConsumer(d *Dispatcher) {
 	go func() {
 		for t := range d.tasks {
-			eventName := t.GetName()
-			execute(d.listeners[eventName], t)
+			execute(d.listeners[t.GetName()], t)
 		}
 	}()
 }

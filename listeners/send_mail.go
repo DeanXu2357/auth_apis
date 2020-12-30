@@ -21,7 +21,7 @@ func (l SendMailListener) Handle(e event_listener.Event) error {
 	event, ok := e.(SendMailEvent)
 	if !ok {
 		log.Printf("type is %s \n", reflect.TypeOf(e))
-		return errors.New("Undefined event type")
+		return errors.New("undefined event type")
 	}
 
 	info := email.NewInfo()

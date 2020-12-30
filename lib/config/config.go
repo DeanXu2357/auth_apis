@@ -8,6 +8,7 @@ import (
 var (
 	LoginAuth    LoginAuthSettings
 	ActivateAuth ActivateAuthSettings
+	EventListener EventListenerSettings
 )
 
 func init() {
@@ -18,6 +19,10 @@ func init() {
 	}
 
 	if err := viper.UnmarshalKey("login_auth", &LoginAuth); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := viper.UnmarshalKey("event_listener", &EventListener); err != nil {
 		log.Fatal(err)
 	}
 }

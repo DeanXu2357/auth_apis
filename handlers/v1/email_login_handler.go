@@ -42,7 +42,7 @@ func RegisterByMail(c *gin.Context) {
 	}
 
 	dispatcher := c.MustGet("Dispatcher").(*event_listener.Dispatcher)
-	dispatcher.Dispatch(events.EmailRegisteredEvent{User: *user, Token: token})
+	dispatcher.DispatchAsync(events.EmailRegisteredEvent{User: *user, Token: token})
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, map[string]interface{}{"user_id": user.ID, "email": input.Email})
 	return

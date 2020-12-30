@@ -12,6 +12,10 @@ redis_addr: "redis:6379"
 redis_password:
 redis_db: 0
 
+event_listener:
+  worker_number: 2
+  task_limit: 10000
+
 activate_auth:
   public_key:
   private_key:
