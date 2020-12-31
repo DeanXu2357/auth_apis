@@ -12,11 +12,8 @@ import (
 	"time"
 )
 
-type RedisQueueJob interface {
-	handle() error
-}
-
 type RedisQueue struct {
+	QueueName     string
 	WorkerNumber  int
 	RedisAddr     string
 	RedisDb       int
@@ -25,11 +22,34 @@ type RedisQueue struct {
 	handler       func(Msg) error
 }
 
-type Msg string
+func NewRedisQueue(name, addr, password string, db, workNumber int) (*RedisQueue) {
+	q := &RedisQueue{
+		QueueName: name,
+		RedisAddr: addr,
+		RedisPassword: password,
+		RedisDb: db,
+		WorkerNumber: workNumber,
+	}
+	q.pool = q.redisPoolInit()
+	return q
+}
+
+func (q *RedisQueue) Produce(m Msg) error {
+	conn := q.pool.Get()
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	_, err := conn.Do("lpush", q.getQueueName(), m)
+
+	return err
+}
 
 func (q *RedisQueue) Consume(handle func(Msg) error) {
 	q.handler = handle
-	q.pool = q.redisPoolInit()
 	defer func() {
 		_ = q.pool.Close()
 	}()
@@ -43,13 +63,13 @@ func (q *RedisQueue) Consume(handle func(Msg) error) {
 	confirms := make(chan Msg)
 	defer close(confirms)
 
-	consume := func (in <-chan Msg) {
+	consume := func(in <-chan Msg) {
 		for n := range in {
 			if err := q.handler(n); err != nil {
 				log.Printf("handle error: %s\n", err.Error())
 				continue
 			}
-			confirms<-n
+			confirms <- n
 		}
 	}
 
@@ -161,7 +181,7 @@ func (q *RedisQueue) getQueueName() string {
 		"%s:%s:%s",
 		viper.GetString("app_name"),
 		viper.GetString("app_env"),
-		"email_send",
+		q.QueueName,
 	)
 }
 
