@@ -1,9 +1,9 @@
 package handler_tests
 
 import (
+	"auth/config"
 	"auth/handlers/v1"
 	"auth/lib/assertion"
-	"auth/lib/config"
 	"auth/lib/database"
 	"auth/models"
 	"auth/tests"

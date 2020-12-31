@@ -1,7 +1,7 @@
 package event_listener
 
 import (
-	"auth/lib/config"
+	"auth/config"
 	"log"
 )
 

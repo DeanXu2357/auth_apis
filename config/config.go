@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	LoginAuth    LoginAuthSettings
-	ActivateAuth ActivateAuthSettings
+	LoginAuth     LoginAuthSettings
+	ActivateAuth  ActivateAuthSettings
 	EventListener EventListenerSettings
 )
 

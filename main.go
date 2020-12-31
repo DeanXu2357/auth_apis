@@ -2,8 +2,8 @@ package main
 
 import (
 	"auth/cmd/sending_email"
+	"auth/config"
 	"auth/events"
-	"auth/lib/config"
 	"auth/lib/database"
 	"auth/lib/email"
 	"auth/lib/event_listener"

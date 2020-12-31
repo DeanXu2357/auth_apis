@@ -1,7 +1,7 @@
 package handlers_v1
 
 import (
-	"auth/lib/config"
+	"auth/config"
 	"auth/lib/helpers"
 	"auth/models"
 	"crypto/rsa"

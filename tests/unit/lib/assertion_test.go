@@ -1,8 +1,8 @@
 package lib
 
 import (
+	"auth/config"
 	"auth/lib/assertion"
-	"auth/lib/config"
 	"auth/lib/database"
 	"auth/models"
 	"auth/tests"

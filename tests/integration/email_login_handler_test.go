@@ -1,8 +1,8 @@
 package integration
 
 import (
+	"auth/config"
 	"auth/lib/assertion"
-	"auth/lib/config"
 	"auth/lib/database"
 	"auth/lib/event_listener"
 	"auth/models"
