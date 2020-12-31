@@ -2,77 +2,12 @@
 
 ## Apis
 
-* email register
-* email verify
-* email activate
+* email register -> done
+* email verify -> done 
+* email activate -> done
 * ~~email resend~~
 * email password recovery
 * email password reset
-
-## Schema
-
-* users
-
-|name|type|length|default|index|comment|
-|---:|---:|---:|---:|---:|---:|
-|id|string|32|N|PK|uuid v4 generate by `{root}/models/users`|
-|email|string|128|N|UNIQUE||
-|name|string|50|''|||
-|created_at|timestamp|||||
-|updated_at|timestamp|||||
-
-* email_login
-
-|name|type|length|default|index|comment|
-|---:|---:|---:|---:|---:|---:|
-|email|string|128|N|PK||
-|pwd|string|255|N||hash, nullable|
-|verifed_at|timestamp|||||
-|created_at|timestamp|||||
-|updated_at|timestamp|||||
-
-* email_verify
-
-|name|type|length|default|index|comment|
-|---:|---:|---:|---:|---:|---:|
-|id|uuid||N|PK|uuid|
-|email|string|128|N|||
-|mail_type|string|64|N||verify, reset|
-|verification|smallint||0|N||0:未驗證, 1:已驗證|
-|created_at|timestamp|||||
-|updated_at|timestamp|||||
-
-## flow
-* Register by email
-    1. request api `/api/v1/email/register`
-    2. model user create
-    3. model email_login create
-    4. model email_verify create
-    5. send email
-        - url = `/api/v1/email/activate?token=` + token(use email_verify id as id to generate jwt token)
-    6. user request verify url`/api/v1/email/activate` 
-    7. parse token
-    8. query email_verify by id , and verify
-        1. email if the same 
-        2. created_at compare now if in setting durations
-        3. mail_type is `verify`
-    9. update email_login
-    10. delete email_verify
-    11. redirect to login page (setting in config file)
-* Reset password
-    1. request recovery password api `/api/v1/email/recovery`
-    2. model email_verify create 
-    3. send email
-        - url = `/api/v1/email/activate?token=` + token(use email_verify id as id to generate jwt token)    
-    4. request reset password api `/api/v1/email/reset`
-    5. query email_verify by id
-    6. verify
-        1. email
-        2. type
-        3. created_at
-    7. update email_login
-    8. delete email_verify
-    9. redirect to login page (setting in config file)
 
 ## todo list
 * [x] refactor
@@ -103,18 +38,18 @@
     - [ ] add publisher function
   - [ ] Send to queue
   - [x] email sending services
-* [ ] verify api
+* [x] verify api
 * [ ] Log file writing
   - [ ] usage of project `https://github.com/natefinch/lumberjack`
   - [ ] log level -- integration with zap `https://github.com/uber-go/zap`
+  - [ ] Standardize log format by zap
 * [ ] backlog 
     - [ ] Worker handler error job
-    - [ ] Finish async mailer flow
+    - [x] Finish async mailer flow
     - [ ] Optimus config 
 * [ ] Wanted Feature
-    - [ ] go mod cache for images
+    - [ ] go mod cache and docker images integration
     - [ ] add grpc protocal
-    - [ ] ~~rabbitmq integration~~
     - [ ] docker-compose.yml health check if db ready
     - [ ] my own recovery middleware
         1. email notify developer or sentry
@@ -126,7 +61,6 @@
     * [ ] Refresh database in sequence
     * [ ] Add setting options for request read and write timeout
     * [ ] Add setting options for run mode
-    * [ ] Standardize log format
     * [x] Document flow and new schema
     * [x] Redesign database schema
     * [ ] add migration command
@@ -137,5 +71,5 @@
 ---
 ### Next Jobs
 * [ ] Standardize log format, wait for select a library
-* [ ] jwt library select 
-* [ ] add new helpers function GetNewDBSession
+* [ ] coverage file output
+* [ ] test verfiy api
