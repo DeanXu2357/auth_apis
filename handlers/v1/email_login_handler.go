@@ -4,10 +4,8 @@ import (
 	"auth/events"
 	"auth/lib/event_listener"
 	"auth/lib/helpers"
-	"auth/models"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -58,23 +56,14 @@ func VerifyMailLogin(c *gin.Context) {
 		return
 	}
 
-	var loginInfo models.EmailLogin
-	db := c.MustGet("DB").(*gorm.DB)
-	result := db.Where("email = ?", input.Email).First(&loginInfo)
-
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	db := helpers.GetDB(c)
+	token, err := EmailVerify(input.Email, input.Password, db)
+	if err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(loginInfo.Password), []byte(input.Password)); err != nil {
-		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
-		return
-	}
-
-	// todo: produce jwt token for authentication
-
-	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	helpers.GenerateResponse(c, helpers.ReturnOK, map[string]string{"token": token})
 	return
 }
 
