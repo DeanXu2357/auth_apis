@@ -13,10 +13,10 @@ const (
 )
 
 type AuthToken struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	LoginWay  string
-	Revoked   uint8
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;" fake:"{uuid}"`
+	UserID    uuid.UUID `fake:"{uuid}"`
+	LoginWay  string    `fake:"randomstring:[email]"`
+	Revoked   uint8     `fake:"{number:0,1}"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
