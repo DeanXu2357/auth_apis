@@ -49,7 +49,7 @@ func GenerateActivationToken(user *models.User, db *gorm.DB) (string, error) {
 		return "", fmt.Errorf("Insert failed :  %w", err)
 	}
 
-	now := time.Now()
+	now := helpers.NowTime()
 	claims := &jwt.StandardClaims{
 		Audience:  user.Email,
 		ExpiresAt: now.Add(time.Duration(config.ActivateAuth.Expire) * time.Second).Unix(),
