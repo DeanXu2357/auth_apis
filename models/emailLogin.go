@@ -5,10 +5,10 @@ import (
 )
 
 type EmailLogin struct {
-	Email string `gorm:"primary_key;"`
-	Password string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Email      string `gorm:"primary_key;"`
+	Password   string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	VerifiedAt time.Time
 }
 
