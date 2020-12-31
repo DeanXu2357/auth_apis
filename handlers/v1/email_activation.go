@@ -107,11 +107,11 @@ func Activate(tokenString string, db *gorm.DB) error {
 	}()
 	if err := tx.Model(&emailVerify).Update("Verification", models.VerifyTrue).Error; err != nil {
 		tx.Rollback()
-		return fmt.Errorf("%w\n%w", ErrorDBUpdateFailed, err)
+		return ErrorDBUpdateFailed
 	}
 	if err := tx.Model(&models.EmailLogin{Email: emailVerify.Email}).Update("VerifiedAt", time.Now()).Error; err != nil {
 		tx.Rollback()
-		return fmt.Errorf("%w\n%w", ErrorDBUpdateFailed, err)
+		return ErrorDBUpdateFailed
 	}
 	tx.Commit()
 
