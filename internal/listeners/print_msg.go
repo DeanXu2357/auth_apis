@@ -1,7 +1,7 @@
 package listeners
 
 import (
-	"auth/events"
+	"auth/internal/events"
 	"auth/lib/event_listener"
 	"errors"
 	"fmt"

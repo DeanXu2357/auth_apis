@@ -1,14 +1,14 @@
 package main
 
 import (
-	"auth/cmd/sending_email"
-	"auth/config"
-	"auth/events"
+	"auth/internal/cmd/sending_email"
+	"auth/internal/config"
+	"auth/internal/events"
+	"auth/internal/listeners"
+	"auth/internal/routes"
 	"auth/lib/database"
 	"auth/lib/email"
 	"auth/lib/event_listener"
-	"auth/listeners"
-	"auth/routes"
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"

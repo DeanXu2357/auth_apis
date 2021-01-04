@@ -1,11 +1,11 @@
 package lib
 
 import (
-	"auth/config"
+	"auth/internal/config"
+	"auth/internal/models"
 	"auth/lib/assertion"
 	"auth/lib/database"
 	"auth/lib/factory"
-	"auth/models"
 	"auth/tests"
 	"github.com/stretchr/testify/assert"
 	"reflect"

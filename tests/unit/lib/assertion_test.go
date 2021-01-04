@@ -1,10 +1,10 @@
 package lib
 
 import (
-	"auth/config"
+	"auth/internal/config"
+	"auth/internal/models"
 	"auth/lib/assertion"
 	"auth/lib/database"
-	"auth/models"
 	"auth/tests"
 	"testing"
 )

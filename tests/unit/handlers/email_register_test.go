@@ -1,11 +1,11 @@
 package handler_tests
 
 import (
-	"auth/config"
-	"auth/handlers/v1"
+	"auth/internal/config"
+	"auth/internal/handlers/v1"
+	"auth/internal/models"
 	"auth/lib/assertion"
 	"auth/lib/database"
-	"auth/models"
 	"auth/tests"
 	"github.com/stretchr/testify/assert"
 	"testing"

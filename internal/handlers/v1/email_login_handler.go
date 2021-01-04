@@ -1,9 +1,9 @@
 package handlers_v1
 
 import (
-	"auth/events"
+	"auth/internal/events"
+	"auth/internal/helpers"
 	"auth/lib/event_listener"
-	"auth/lib/helpers"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

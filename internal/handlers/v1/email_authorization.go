@@ -1,9 +1,9 @@
 package handlers_v1
 
 import (
-	"auth/config"
-	"auth/lib/helpers"
-	"auth/models"
+	"auth/internal/config"
+	"auth/internal/helpers"
+	"auth/internal/models"
 	"crypto/rsa"
 	"errors"
 	"fmt"

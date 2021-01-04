@@ -1,12 +1,12 @@
 package integration
 
 import (
-	"auth/config"
+	"auth/internal/config"
+	"auth/internal/models"
+	"auth/internal/routes"
 	"auth/lib/assertion"
 	"auth/lib/database"
 	"auth/lib/event_listener"
-	"auth/models"
-	"auth/routes"
 	"auth/tests"
 	"encoding/json"
 	"github.com/stretchr/testify/assert"

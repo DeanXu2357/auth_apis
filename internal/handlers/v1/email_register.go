@@ -1,7 +1,7 @@
 package handlers_v1
 
 import (
-	"auth/models"
+	"auth/internal/models"
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"

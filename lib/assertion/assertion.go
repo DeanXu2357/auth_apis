@@ -1,7 +1,7 @@
 package assertion
 
 import (
-	"auth/models"
+	"auth/internal/models"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"

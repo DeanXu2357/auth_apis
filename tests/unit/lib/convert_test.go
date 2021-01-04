@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"auth/lib/helpers"
+	"auth/internal/helpers"
 	"github.com/satori/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"

@@ -1,9 +1,9 @@
 package routes
 
 import (
-	handlerV1 "auth/handlers/v1"
+	handlerV1 "auth/internal/handlers/v1"
+	"auth/internal/middlewares"
 	"auth/lib/event_listener"
-	"auth/middlewares"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

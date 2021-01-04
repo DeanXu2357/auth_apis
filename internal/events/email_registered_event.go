@@ -1,7 +1,7 @@
 package events
 
 import (
-	"auth/models"
+	"auth/internal/models"
 	"fmt"
 )
 
