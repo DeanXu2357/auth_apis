@@ -21,13 +21,13 @@ activate_auth:
   private_key:
   issuer:
   expire:
-  refresh_expire:
 
 login_auth:
   public_key:
   private_key:
-    issuer:
-    expire:
+  issuer:
+  expire:
+  refresh_expire:
 
 email:
   host:
