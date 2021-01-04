@@ -98,8 +98,6 @@ func Activate(tokenString string, db *gorm.DB) error {
 		return fmt.Errorf("data raw not exist : %w", ErrorTokenInvalid)
 	}
 
-	// todo: check duration between created_at and now if in 7 days
-
 	tx := db.Session(&gorm.Session{SkipDefaultTransaction: true})
 	defer func() {
 		if r := recover(); r != nil {
