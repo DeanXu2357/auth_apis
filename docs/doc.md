@@ -8,6 +8,8 @@
 * ~~email resend~~
 * email password recovery
 * email password reset
+* user identify api and middleware
+* refresh token
 
 ## todo list
 * [x] refactor
@@ -67,6 +69,9 @@
         - [ ] up
         - [ ] down
         - [ ] create
+* [ ] DevOpts About
+    - [ ] design ci/cd flow
+    - [ ] write k8s yaml
     
 ---
 ### Next Jobs
