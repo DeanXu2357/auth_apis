@@ -77,4 +77,9 @@
 ### Next Jobs
 * [ ] Standardize log format, wait for select a library
 * [ ] coverage file output
-* [ ] test verfiy api
+* [ ] test verify api
+* [ ] verify token middleware
+* [ ] refresh token api 
+* [ ] recovery password api
+* [ ] reset password api 
+* [ ] search line bot login

@@ -69,14 +69,14 @@ func VerifyMailLogin(c *gin.Context) {
 
 func ActivateEmailRegister(c *gin.Context) {
 	var input struct {
-		Token string `form:"token"`
+		Token string `json:"token"`
 	}
 	if err := c.ShouldBindQuery(&input); err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
 
-	db := c.MustGet("DB").(*gorm.DB)
+	db := helpers.GetDB(c)
 
 	if err := Activate(input.Token, db); err != nil {
 		if errors.Is(err, ErrorTokenNotValidYet) {
@@ -94,6 +94,46 @@ func ActivateEmailRegister(c *gin.Context) {
 		return
 	}
 
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
+}
+
+func RecoveryPassword(c *gin.Context) {
+	var input struct {
+		Email string `json:"email" binding:"required"`
+	}
+	if err := c.ShouldBindQuery(&input); err != nil {
+		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
+		return
+	}
+
+	db := helpers.GetDB(c)
+
+	// find login raw
+	emailLogin, err := FindEmailLogin(input.Email, db)
+	if err != nil {
+		return
+	}
+	// if no login raw  error
+
+	// genterate token and mail
+	// mail
+
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
+}
+
+func ShowResetPage(c *gin.Context) {
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
+}
+
+func ResetPassword(c *gin.Context) {
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
+	return
+}
+
+func RefreshToken(c *gin.Context) {
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 	return
 }
