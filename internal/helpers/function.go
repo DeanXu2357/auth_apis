@@ -6,26 +6,13 @@ import (
 	"time"
 )
 
-var Helper HelperInstance
-
-type HelperInstance struct{}
-
-func (h HelperInstance) getDB(c *gin.Context) *gorm.DB {
-	return c.MustGet("DB").(*gorm.DB)
-}
-
-func (h HelperInstance) nowTime() time.Time {
-	return time.Now()
-}
-
-func init() {
-	Helper = HelperInstance{}
-}
+var NowFunction = func() time.Time {return time.Now()}
+var GetDBFunction = func(c *gin.Context) *gorm.DB {return c.MustGet("DB").(*gorm.DB)}
 
 func NowTime() time.Time {
-	return Helper.nowTime()
+	return NowFunction()
 }
 
 func GetDB(c *gin.Context) *gorm.DB {
-	return Helper.getDB(c)
+	return GetDBFunction(c)
 }

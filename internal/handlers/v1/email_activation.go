@@ -21,7 +21,7 @@ var (
 	ErrorDBInsertFailed   = errors.New("DB insert failed")
 	ErrorTokenMalformed   = errors.New("token malformed")
 	ErrorTokenExpired     = errors.New("token expired")
-	ErrorTokenNotValidYet = errors.New("token no valid yet")
+	ErrorTokenNotValidYet = errors.New("token not in valid period yet")
 	ErrorTokenInvalid     = errors.New("invalid token")
 )
 
@@ -38,7 +38,7 @@ func init() {
 	}
 }
 
-func GenerateActivationToken(user *models.User, db *gorm.DB) (string, error) {
+func GenerateActivationToken(user models.User, db *gorm.DB) (string, error) {
 	v := &models.EmailVerify{
 		Email:        user.Email,
 		MailType:     models.MailTypeVerifyAccount,
@@ -55,7 +55,7 @@ func GenerateActivationToken(user *models.User, db *gorm.DB) (string, error) {
 		ExpiresAt: now.Add(time.Duration(config.ActivateAuth.Expire) * time.Second).Unix(),
 		Issuer:    "System",
 		IssuedAt:  now.Unix(),
-		NotBefore: now.Unix(),
+		NotBefore: now.Add(10 * time.Second).Unix(),
 		Subject:   "Account email verification",
 		Id:        helpers.UuidToShortString(v.ID),
 	}
@@ -98,6 +98,9 @@ func Activate(tokenString string, db *gorm.DB) error {
 		return fmt.Errorf("data raw not exist : %w", ErrorTokenInvalid)
 	}
 
+	// todo: check validation is false
+	// todo: check type is MailTypeVerifyAccount
+
 	tx := db.Session(&gorm.Session{SkipDefaultTransaction: true})
 	defer func() {
 		if r := recover(); r != nil {
@@ -109,7 +112,7 @@ func Activate(tokenString string, db *gorm.DB) error {
 		tx.Rollback()
 		return ErrorDBUpdateFailed
 	}
-	if err := tx.Model(&models.EmailLogin{Email: emailVerify.Email}).Update("VerifiedAt", time.Now()).Error; err != nil {
+	if err := tx.Model(&models.EmailLogin{Email: emailVerify.Email}).Update("verified_at", helpers.NowTime()).Error; err != nil {
 		tx.Rollback()
 		return ErrorDBUpdateFailed
 	}

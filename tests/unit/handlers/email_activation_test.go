@@ -3,6 +3,7 @@ package handler_tests
 import (
 	"auth/internal/config"
 	handlers_v1 "auth/internal/handlers/v1"
+	"auth/internal/helpers"
 	"auth/internal/models"
 	"auth/lib/assertion"
 	"auth/lib/database"
@@ -12,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 	"testing"
+	"time"
 )
 
 var (
@@ -38,7 +40,7 @@ func Test_GenerateActionToken(t *testing.T) {
 
 	// Act
 	newSession := db.Session(&gorm.Session{NewDB: true})
-	tokenString, err := handlers_v1.GenerateActivationToken(user, newSession)
+	tokenString, err := handlers_v1.GenerateActivationToken(*user, newSession)
 
 	// Assert
 	assert.Nil(t, err)
@@ -61,6 +63,11 @@ func Test_ActivateSuccess(t *testing.T) {
 	config.ActivateAuth = config.ActivateAuthSettings{PrivateKey: testPrivateKey, PublicKey: testPublicKey, Expire: 360}
 
 	// Arrange
+	m, _ := time.ParseDuration("-1m")
+	now := time.Now().Add(m)
+	helpers.NowFunction = func() time.Time {
+		return now
+	}
 	fakeUsers := factory.Create(db, &models.User{}, map[string]interface{}{}, 1)
 	fakeUser := fakeUsers[0]
 	user, ok := fakeUser.(*models.User)
@@ -70,7 +77,7 @@ func Test_ActivateSuccess(t *testing.T) {
 	}
 
 	// Act
-	tokenString, gErr := handlers_v1.GenerateActivationToken(user, db.Session(&gorm.Session{NewDB: true}))
+	tokenString, gErr := handlers_v1.GenerateActivationToken(*user, db.Session(&gorm.Session{NewDB: true}))
 	aErr := handlers_v1.Activate(tokenString, db.Session(&gorm.Session{NewDB: true}))
 
 	assert.Nil(t, gErr)
@@ -82,6 +89,14 @@ func Test_ActivateSuccess(t *testing.T) {
 			"email":        user.Email,
 			"user_id":      hex.EncodeToString(user.ID.Bytes()),
 			"verification": models.VerifyTrue},
+		db,
+	)
+	assertion.DatabaseHas(
+		t,
+		&models.EmailLogin{},
+		map[string]interface{}{
+			"verified_at": now,
+		},
 		db,
 	)
 }
