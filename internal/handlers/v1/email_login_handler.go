@@ -33,7 +33,7 @@ func RegisterByMail(c *gin.Context) {
 	}
 
 	newSession := db.Session(&gorm.Session{NewDB: true})
-	token, err := GenerateActivationToken(user, newSession)
+	token, err := GenerateActivationToken(*user, newSession)
 	if err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
 		return
@@ -106,7 +106,7 @@ func RecoveryPassword(c *gin.Context) {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
-
+/*
 	db := helpers.GetDB(c)
 
 	// find login raw
@@ -114,9 +114,12 @@ func RecoveryPassword(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	// if no login raw  error
-
 	// genterate token and mail
+	token, err := GeneratePasswordToken(emailLogin.User, db)
+	if err != nil {
+		// todo handle
+	}
+*/
 	// mail
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
