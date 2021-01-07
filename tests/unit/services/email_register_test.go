@@ -1,4 +1,4 @@
-package handler_tests
+package service_tests
 
 import (
 	"auth/internal/config"
