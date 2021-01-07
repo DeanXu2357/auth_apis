@@ -1,4 +1,4 @@
-package handlers_v1
+package services
 
 import (
 	"auth/internal/config"

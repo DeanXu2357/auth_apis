@@ -3,6 +3,7 @@ package handlers_v1
 import (
 	"auth/internal/events"
 	"auth/internal/helpers"
+	"auth/internal/services"
 	"auth/lib/event_listener"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -20,10 +21,10 @@ func RegisterByMail(c *gin.Context) {
 		return
 	}
 
-	db := c.MustGet("DB").(*gorm.DB)
-	user, err := Register(input.Name, input.Email, input.Password, db)
+	db := helpers.GetDB(c)
+	user, err := services.Register(input.Name, input.Email, input.Password, db)
 	if err != nil {
-		if errors.Is(err, ErrEmailAlreadyRegistered) {
+		if errors.Is(err, services.ErrEmailAlreadyRegistered) {
 			helpers.GenerateResponse(c, helpers.ReturnDuplicate, nil)
 			return
 		}
@@ -33,7 +34,7 @@ func RegisterByMail(c *gin.Context) {
 	}
 
 	newSession := db.Session(&gorm.Session{NewDB: true})
-	token, err := GenerateActivationToken(*user, newSession)
+	token, err := services.GenerateActivationToken(*user, newSession)
 	if err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
 		return
@@ -57,7 +58,7 @@ func VerifyMailLogin(c *gin.Context) {
 	}
 
 	db := helpers.GetDB(c)
-	token, err := EmailVerify(input.Email, input.Password, db)
+	token, err := services.EmailVerify(input.Email, input.Password, db)
 	if err != nil {
 		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
 		return
@@ -78,14 +79,14 @@ func ActivateEmailRegister(c *gin.Context) {
 
 	db := helpers.GetDB(c)
 
-	if err := Activate(input.Token, db); err != nil {
-		if errors.Is(err, ErrorTokenNotValidYet) {
+	if err := services.Activate(input.Token, db); err != nil {
+		if errors.Is(err, services.ErrorTokenNotValidYet) {
 			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
 			return
-		} else if errors.Is(err, ErrorTokenExpired) {
+		} else if errors.Is(err, services.ErrorTokenExpired) {
 			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
 			return
-		} else if errors.Is(err, ErrorTokenMalformed) {
+		} else if errors.Is(err, services.ErrorTokenMalformed) {
 			helpers.GenerateResponse(c, helpers.ReturnValidationFailed, err)
 			return
 		}

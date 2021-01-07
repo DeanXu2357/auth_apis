@@ -2,9 +2,9 @@ package handler_tests
 
 import (
 	"auth/internal/config"
-	handlers_v1 "auth/internal/handlers/v1"
 	"auth/internal/helpers"
 	"auth/internal/models"
+	"auth/internal/services"
 	"auth/lib/assertion"
 	"auth/lib/database"
 	"auth/lib/factory"
@@ -40,7 +40,7 @@ func Test_GenerateActionToken(t *testing.T) {
 
 	// Act
 	newSession := db.Session(&gorm.Session{NewDB: true})
-	tokenString, err := handlers_v1.GenerateActivationToken(*user, newSession)
+	tokenString, err := services.GenerateActivationToken(*user, newSession)
 
 	// Assert
 	assert.Nil(t, err)
@@ -77,8 +77,8 @@ func Test_ActivateSuccess(t *testing.T) {
 	}
 
 	// Act
-	tokenString, gErr := handlers_v1.GenerateActivationToken(*user, db.Session(&gorm.Session{NewDB: true}))
-	aErr := handlers_v1.Activate(tokenString, db.Session(&gorm.Session{NewDB: true}))
+	tokenString, gErr := services.GenerateActivationToken(*user, db.Session(&gorm.Session{NewDB: true}))
+	aErr := services.Activate(tokenString, db.Session(&gorm.Session{NewDB: true}))
 
 	assert.Nil(t, gErr)
 	assert.Nil(t, aErr)
