@@ -20,6 +20,12 @@ type SMTPInfo struct {
 	From     string
 }
 
+var DefaultMailer Email
+
+func init() {
+	DefaultMailer = Email{NewInfo()}
+}
+
 func NewEmail(info *SMTPInfo) *Email {
 	return &Email{info}
 }
@@ -34,6 +40,10 @@ func (e *Email) SendMail(to []string, subject string, body string) error {
 	dialer := gomail.NewDialer(e.Host, e.Port, e.UserName, e.Password)
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: e.IsSSl}
 	return dialer.DialAndSend(m)
+}
+
+func SendMail(to []string, subject string, body string) error {
+	return DefaultMailer.SendMail(to, subject, body)
 }
 
 func NewInfo() *SMTPInfo {
