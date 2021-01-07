@@ -38,19 +38,27 @@ func init() {
 func EmailVerify(email, pwd string, db *gorm.DB) (string, error) {
 	var loginInfo models.EmailLogin
 	var user models.User
-	result := db.Where("email = ?", email).First(&loginInfo)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return "", ErrorUserNotFound
+	loginInfo, err := FindEmailLogin(email, db)
+	if err != nil {
+		// todo: should tell user the correct login way
+		return "", err
 	}
-	result = db.Where("email = ?", email).First(&user)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return "", ErrorUserNotFound
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", ErrorUserNotFound
+		}
+
+		return "", fmt.Errorf("%s\n%w", err.Error(), ErrInternalError)
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(loginInfo.Password), []byte(pwd)); err != nil {
 		return "", ErrorPasswordIncorrect
 	}
 
+	return GenerateLoginToken(user, db.Session(&gorm.Session{NewDB: true}), loginInfo.Email, "Login token")
+}
+
+func GenerateLoginToken(user models.User, db *gorm.DB, identify string, subject string) (string, error) {
 	a := &models.AuthToken{
 		UserID:   user.ID,
 		LoginWay: models.LoginByEmail,
@@ -62,12 +70,12 @@ func EmailVerify(email, pwd string, db *gorm.DB) (string, error) {
 
 	now := helpers.NowTime()
 	claims := &jwt.StandardClaims{
-		Audience:  loginInfo.Email,
+		Audience:  identify,
 		ExpiresAt: now.Add(time.Duration(config.LoginAuth.Expire) * time.Second).Unix(),
 		Issuer:    "System",
 		IssuedAt:  now.Unix(),
 		NotBefore: now.Unix(),
-		Subject:   "Login token",
+		Subject:   subject,
 		Id:        helpers.UuidToShortString(a.ID),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
