@@ -7,6 +7,7 @@ import (
 
 const (
 	LoginByEmail = "email"
+	LoginByRefresh = "refresh"
 
 	RevokedFalse = iota
 	RevokedTrue

@@ -3,9 +3,12 @@ package handlers_v1
 import (
 	"auth/internal/events"
 	"auth/internal/helpers"
+	"auth/internal/models"
 	"auth/internal/services"
+	"auth/lib/email"
 	"auth/lib/event_listener"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -107,21 +110,30 @@ func RecoveryPassword(c *gin.Context) {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
-/*
+
 	db := helpers.GetDB(c)
 
-	// find login raw
-	emailLogin, err := FindEmailLogin(input.Email, db)
+	emailLogin, err := services.FindEmailLogin(input.Email, db)
 	if err != nil {
 		return
 	}
-	// genterate token and mail
-	token, err := GeneratePasswordToken(emailLogin.User, db)
+
+	var user models.User
+	db.Where(&models.User{Email: emailLogin.Email}).First(&user)
+
+	token, err := services.GeneratePasswordToken(user, db)
 	if err != nil {
-		// todo handle
+		// todo handle error
 	}
-*/
-	// mail
+
+	if err := email.SendMail(
+		[]string{input.Email},
+		"Reset your password",
+		fmt.Sprintf("for test , token: %s", token),
+	); err != nil {
+		helpers.GenerateResponse(c, helpers.ReturnInternalError, err)
+		return
+	}
 
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 	return
@@ -138,6 +150,14 @@ func ResetPassword(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
+	// decode token
+	// check if revoked
+	// check if out of refresh limit
+	// transaction
+	// generate token
+	// delete old token
+	// commit
+
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 	return
 }
