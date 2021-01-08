@@ -11,7 +11,7 @@
 * user identify api and middleware
 * refresh token
 
-## todo list
+## Total todo list
 * [x] refactor
 * [x] basic api testing
 * [x] database asseration function [ING] 
@@ -52,7 +52,7 @@
 * [ ] Wanted Feature
     - [ ] go mod cache and docker images integration
     - [ ] add grpc protocal
-    - [ ] docker-compose.yml health check if db ready
+    - [x] docker-compose.yml health check if db ready
     - [ ] my own recovery middleware
         1. email notify developer or sentry
         2. recovery and log with informations like error level 
@@ -82,4 +82,14 @@
 * [ ] refresh token api 
 * [ ] recovery password api
 * [ ] reset password api 
-* [ ] search line bot login
+* [ ] research for line bot login
+
+### Execution sequence
+* Normal 
+    1. finish basic apis 
+    2. add grpc support
+    3. swagger
+    4. open tracing support
+    
+* DevOpts
+    1. design ci/cd flow

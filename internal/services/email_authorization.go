@@ -81,3 +81,46 @@ func GenerateLoginToken(user models.User, db *gorm.DB, identify string, subject 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(authSignKey)
 }
+
+func DecodeLoginToken(tokenString string, db *gorm.DB) (m models.AuthToken, err error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return verifyKey, nil
+	})
+	if err != nil {
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				return models.AuthToken{}, ErrorTokenMalformed
+			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
+			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
+				return models.AuthToken{}, ErrorTokenNotValidYet
+			} else {
+				err = fmt.Errorf("%s\n%e", err.Error(), ErrorTokenInvalid)
+				return
+			}
+		} else {
+			err = fmt.Errorf("%s\n%e", err.Error(), ErrorTokenInvalid)
+			return
+		}
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		err = ErrorTokenInvalid
+		return
+	}
+
+	jti := claims["jti"].(string)
+	id, err := helpers.ShortStringToUuid(jti)
+	if err != nil {
+		return
+	}
+
+	authToken := models.AuthToken{ID: id}
+	result := db.First(&authToken)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		err = fmt.Errorf("data raw not exist : %w", ErrorTokenInvalid)
+		return
+	}
+
+	return
+}

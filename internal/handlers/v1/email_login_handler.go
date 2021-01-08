@@ -150,6 +150,11 @@ func ResetPassword(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	tokenString := authHeader[len("Bearer "):]
+
+	db := helpers.GetDB(c)
+	authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
 	// decode token
 	// check if revoked
 	// check if out of refresh limit

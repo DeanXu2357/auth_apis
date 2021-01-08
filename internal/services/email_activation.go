@@ -68,10 +68,6 @@ func Activate(tokenString string, db *gorm.DB) error {
 		return verifyKey, nil
 	})
 	if err != nil {
-		return err
-	}
-
-	if !token.Valid {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 				return ErrorTokenMalformed
