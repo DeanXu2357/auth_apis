@@ -9,6 +9,7 @@ import (
 	"auth/lib/database"
 	"auth/lib/email"
 	"auth/lib/event_listener"
+	log2 "auth/lib/log"
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -29,8 +30,21 @@ func main() {
 
 	config.InitialConfigurations()
 
-	serveCmd := &cobra.Command{
-		Use: "serve",
+	serveCmd := generateServerCmd()
+
+	rootCmd.AddCommand(sending_email.GenerateCommand())
+	rootCmd.AddCommand(generateTestCmd())
+	rootCmd.AddCommand(serveCmd)
+
+	err := rootCmd.Execute()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func generateServerCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "serve",
 		Short: "run server",
 		Run: func(cmd *cobra.Command, args []string) {
 			db := database.InitialDatabase()
@@ -51,15 +65,6 @@ func main() {
 				}
 			}()
 		},
-	}
-
-	rootCmd.AddCommand(sending_email.GenerateCommand())
-	rootCmd.AddCommand(generateTestCmd())
-	rootCmd.AddCommand(serveCmd)
-
-	err := rootCmd.Execute()
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 
@@ -102,8 +107,8 @@ func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%v", viper.Get("server_port")),
 		Handler:      router,
-		ReadTimeout:  10 * time.Second, // todo : be config
-		WriteTimeout: 10 * time.Second,
+		//ReadTimeout:  10 * time.Second, // todo : be config
+		//WriteTimeout: 10 * time.Second,
 	}
 
 	go func() {
@@ -121,4 +126,5 @@ func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown: ", err)
 	}
+	log2.BeforeExit()
 }

@@ -7,6 +7,7 @@ import (
 	"auth/internal/services"
 	"auth/lib/email"
 	"auth/lib/event_listener"
+	"auth/lib/log"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -24,15 +25,17 @@ func RegisterByMail(c *gin.Context) {
 		return
 	}
 
+	log.Info("iiiiiiiiiiiiiiiiiiiii", c)
+
 	db := helpers.GetDB(c)
-	user, err := services.Register(input.Name, input.Email, input.Password, db)
+	user, err := services.Register(input.Name, input.Email, input.Password, db.Session(&gorm.Session{NewDB: true}))
 	if err != nil {
 		if errors.Is(err, services.ErrEmailAlreadyRegistered) {
-			helpers.GenerateResponse(c, helpers.ReturnDuplicate, nil)
+			helpers.GenerateResponse(c, helpers.ReturnDuplicate, map[string]interface{}{"msg": err.Error()})
 			return
 		}
 
-		helpers.GenerateResponse(c, helpers.ReturnInternalError, err.Error())
+		helpers.GenerateResponse(c, helpers.ReturnInternalError, map[string]interface{}{"msg": err.Error()})
 		return
 	}
 
@@ -150,11 +153,11 @@ func ResetPassword(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
-	authHeader := c.GetHeader("Authorization")
-	tokenString := authHeader[len("Bearer "):]
-
-	db := helpers.GetDB(c)
-	authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
+	//authHeader := c.GetHeader("Authorization")
+	//tokenString := authHeader[len("Bearer "):]
+	//
+	//db := helpers.GetDB(c)
+	//authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
 	// decode token
 	// check if revoked
 	// check if out of refresh limit

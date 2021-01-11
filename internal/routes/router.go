@@ -23,12 +23,13 @@ func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
 		emails.POST("/verify", handlerV1.VerifyMailLogin)
 		emails.GET("/activate", handlerV1.ActivateEmailRegister)
 
-		emails.POST("/recovery", handlerV1.RecoveryPassword)
-		emails.GET("/reset", handlerV1.ShowResetPage)
-		emails.POST("/reset", handlerV1.ResetPassword)
+		// 未完成
+		//emails.POST("/recovery", handlerV1.RecoveryPassword)
+		//emails.GET("/reset", handlerV1.ShowResetPage)
+		//emails.POST("/reset", handlerV1.ResetPassword)
 
-		user := v1.Group("/user")
-		user.POST("refresh/token", handlerV1.RefreshToken)
+		//user := v1.Group("/user")
+		//user.POST("refresh/token", handlerV1.RefreshToken)
 	}
 
 	return r
