@@ -7,7 +7,6 @@ import (
 	"auth/internal/services"
 	"auth/lib/email"
 	"auth/lib/event_listener"
-	"auth/lib/log"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -24,8 +23,6 @@ func RegisterByMail(c *gin.Context) {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
 		return
 	}
-
-	log.Info("iiiiiiiiiiiiiiiiiiiii", c)
 
 	db := helpers.GetDB(c)
 	user, err := services.Register(input.Name, input.Email, input.Password, db.Session(&gorm.Session{NewDB: true}))
@@ -66,7 +63,12 @@ func VerifyMailLogin(c *gin.Context) {
 	db := helpers.GetDB(c)
 	token, err := services.EmailVerify(input.Email, input.Password, db)
 	if err != nil {
-		helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
+		if errors.Is(err, services.ErrorUserNotFound) {
+			helpers.GenerateResponse(c, helpers.ReturnNotExist, nil)
+			return
+		}
+
+		helpers.GenerateResponse(c, helpers.ReturnBadRequest, map[string]string{"detail": err.Error()})
 		return
 	}
 

@@ -14,6 +14,7 @@ type Response struct {
 
 var (
 	ReturnOK               = Response{status: 200, msg: "ok", http: http.StatusOK}
+	ReturnBadRequest       = Response{status: 40000, msg: "bad request", http: http.StatusBadRequest}
 	ReturnInvalidToken     = Response{status: 40101, msg: "Invalid token", http: http.StatusUnauthorized}
 	ReturnTokenExpire      = Response{status: 40102, msg: "Expired token", http: http.StatusUnauthorized}
 	ReturnValidationFailed = Response{status: 40022, msg: "Validation failed", http: http.StatusBadRequest}

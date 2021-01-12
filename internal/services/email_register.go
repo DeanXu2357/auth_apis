@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
+	"strings"
 )
 
 var (
@@ -25,7 +26,12 @@ func Register(name string, email string, password string, db *gorm.DB) (*models.
 	user := &models.User{Name: name, Email: email}
 	if err := tx.Create(user).Error; err != nil {
 		tx.Rollback()
-		return nil, ErrEmailAlreadyRegistered
+
+		if strings.Contains(err.Error(), "23505") {
+			return nil, ErrEmailAlreadyRegistered
+		}
+
+		return nil, err
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
