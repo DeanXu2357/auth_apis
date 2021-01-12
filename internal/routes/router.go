@@ -28,8 +28,11 @@ func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
 		//emails.GET("/reset", handlerV1.ShowResetPage)
 		//emails.POST("/reset", handlerV1.ResetPassword)
 
-		//user := v1.Group("/user")
-		//user.POST("refresh/token", handlerV1.RefreshToken)
+		user := v1.Group("/user")
+		user.Use(middlewares.AuthorizeUserToken())
+		user.GET("", handlerV1.ShowUser)
+
+		v1.POST("refresh/token", handlerV1.RefreshToken)
 	}
 
 	return r

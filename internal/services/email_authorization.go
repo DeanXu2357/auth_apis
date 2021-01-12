@@ -91,6 +91,8 @@ func DecodeLoginToken(tokenString string, db *gorm.DB) (m models.AuthToken, err 
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 				return models.AuthToken{}, ErrorTokenMalformed
 			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				m, _ := decodeToken(token, db)
+				return m, ErrorTokenExpired
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				return models.AuthToken{}, ErrorTokenNotValidYet
 			} else {
@@ -103,6 +105,10 @@ func DecodeLoginToken(tokenString string, db *gorm.DB) (m models.AuthToken, err 
 		}
 	}
 
+	return decodeToken(token, db)
+}
+
+func decodeToken(token *jwt.Token, db *gorm.DB) (m models.AuthToken, err error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		err = ErrorTokenInvalid
@@ -115,8 +121,8 @@ func DecodeLoginToken(tokenString string, db *gorm.DB) (m models.AuthToken, err 
 		return
 	}
 
-	authToken := models.AuthToken{ID: id}
-	result := db.First(&authToken)
+	m = models.AuthToken{ID: id}
+	result := db.First(&m)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		err = fmt.Errorf("data raw not exist : %w", ErrorTokenInvalid)
 		return

@@ -6,18 +6,18 @@ import (
 )
 
 const (
+	RevokedFalse bool = false
+	RevokedTrue bool = true
+
 	LoginByEmail = "email"
 	LoginByRefresh = "refresh"
-
-	RevokedFalse = iota
-	RevokedTrue
 )
 
 type AuthToken struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;" fake:"{uuid}"`
 	UserID    uuid.UUID `fake:"{uuid}"`
 	LoginWay  string    `fake:"randomstring:[email]"`
-	Revoked   uint8     `fake:"{number:0,1}"`
+	Revoked   bool     `fake:"{boolean}"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

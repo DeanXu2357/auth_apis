@@ -64,6 +64,7 @@ func Log(level zapcore.Level, msg string, identify interface{}) {
 
 			ce.Write(
 				zap.Time("time", time.Now()),
+				//zap.Time("response_time", Compare
 				zap.String("log_type", string(TypeAccess)),
 				zap.String("task_id", ""),
 				zap.Int("status", c.Writer.Status()),
