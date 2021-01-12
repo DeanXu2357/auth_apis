@@ -86,10 +86,12 @@
 
 ### Execution sequence
 * Normal 
-    1. finish basic apis 
+    1. finish basic apis and test
+        * pic upload and localstack
     2. add grpc support
     3. swagger
     4. open tracing support
+    5. add migration command and fix README.md about initial project
     
 * DevOpts
     1. design ci/cd flow
