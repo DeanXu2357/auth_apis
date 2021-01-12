@@ -1,18 +1,14 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"time"
 )
 
 func InitialDatabase() *gorm.DB {
-	timeoutContext, _ := context.WithTimeout(context.Background(), time.Second)
-
 	dbInfo := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		viper.GetString("db_host"),
@@ -27,5 +23,5 @@ func InitialDatabase() *gorm.DB {
 		log.Fatalf("Database Connection failed : %s", err)
 	}
 
-	return db.WithContext(timeoutContext)
+	return db
 }
