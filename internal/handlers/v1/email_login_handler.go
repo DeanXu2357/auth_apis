@@ -1,6 +1,7 @@
 package handlers_v1
 
 import (
+	"auth/internal/config"
 	"auth/internal/events"
 	"auth/internal/helpers"
 	"auth/internal/models"
@@ -11,6 +12,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"log"
+	"time"
 )
 
 func RegisterByMail(c *gin.Context) {
@@ -155,15 +158,36 @@ func ResetPassword(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
-	//authHeader := c.GetHeader("Authorization")
-	//tokenString := authHeader[len("Bearer "):]
-	//
-	//db := helpers.GetDB(c)
-	//authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
-	// decode token
-	// check if revoked
+	authHeader := c.GetHeader("Authorization")
+	tokenString := authHeader[len("Bearer "):]
+	db := helpers.GetDB(c)
+
+	authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
+	if err != nil {
+		if !errors.Is(err, services.ErrorTokenExpired) {
+			// todo: error handling
+		}
+	}
+
+	if authToken.Revoked == false {
+		// todo: error handling
+	}
+
 	// check if out of refresh limit
+	refreshExpire := authToken.CreatedAt.Add(time.Duration(config.LoginAuth.RefreshExpire) * time.Second)
+	if time.Now().After(refreshExpire) {
+		// todo: error handling
+	}
+
 	// transaction
+	tx := db.Session(&gorm.Session{SkipDefaultTransaction: true})
+	defer func() {
+		if r := recover(); r != nil {
+			log.Print(r.(error))
+			tx.Rollback()
+		}
+	}()
+
 	// generate token
 	// delete old token
 	// commit

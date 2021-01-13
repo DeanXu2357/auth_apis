@@ -43,8 +43,10 @@
 * [x] verify api
 * [ ] Log file writing
   - [ ] usage of project `https://github.com/natefinch/lumberjack`
-  - [ ] log level -- integration with zap `https://github.com/uber-go/zap`
-  - [ ] Standardize log format by zap
+  - [ ] log use zap `https://github.com/uber-go/zap`
+  - [ ] log level -- integration with gorm
+  - [ ] log integration with gin
+  - [x] Standardize log format by zap
 * [ ] backlog 
     - [ ] Worker handler error job
     - [x] Finish async mailer flow
