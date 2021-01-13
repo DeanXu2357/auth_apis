@@ -58,6 +58,11 @@
     - [ ] my own recovery middleware
         1. email notify developer or sentry
         2. recovery and log with informations like error level 
+    - [ ] opentracing 
+        ```jaegertracing/all-in-one ```   
+        ```opentracing/opentracing-go@v1.1.0```  
+        ```uber/jaeger-client-go ```  
+        ```eddycjy/opentracing-gorm```  
 * [ ] Refactoring
     * [x] refactoring lib file structure  
         Ex: lib/ -> config/ -> config.go
