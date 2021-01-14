@@ -32,7 +32,7 @@ func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
 		user.Use(middlewares.AuthorizeUserToken())
 		user.GET("", handlerV1.ShowUser)
 
-		v1.POST("refresh/token", handlerV1.RefreshToken)
+		v1.POST("refresh", handlerV1.RefreshToken)
 	}
 
 	return r
