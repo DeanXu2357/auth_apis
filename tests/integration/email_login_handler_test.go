@@ -25,7 +25,7 @@ func Test_Health(t *testing.T) {
 	w := tests.Call(router, "GET", "/api/v1/health", "")
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Contains(t, w.Body.String(), "OK")
+	assert.Contains(t, w.Body.String(), "ok")
 }
 
 func Test_RegisterByEmailSuccess(t *testing.T) {

@@ -36,9 +36,9 @@ func init() {
 }
 
 func EmailVerify(email, pwd string, db *gorm.DB) (string, error) {
-	var loginInfo models.EmailLogin
+	var emailLogin models.EmailLogin
 	var user models.User
-	loginInfo, err := FindEmailLogin(email, db)
+	emailLogin, err := FindEmailLogin(email, db)
 	if err != nil {
 		// todo: should tell user the correct login way
 		return "", err
@@ -51,14 +51,14 @@ func EmailVerify(email, pwd string, db *gorm.DB) (string, error) {
 		return "", fmt.Errorf("%s\n%w", err.Error(), ErrInternalError)
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(loginInfo.Password), []byte(pwd)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(emailLogin.Password), []byte(pwd)); err != nil {
 		return "", ErrorPasswordIncorrect
 	}
 
-	return GenerateLoginToken(user, db.Session(&gorm.Session{NewDB: true}), loginInfo.Email, "Login token")
+	return GenerateLoginToken(user, db.Session(&gorm.Session{NewDB: true}), "Login token")
 }
 
-func GenerateLoginToken(user models.User, db *gorm.DB, identify string, subject string) (string, error) {
+func GenerateLoginToken(user models.User, db *gorm.DB, subject string) (string, error) {
 	a := &models.AuthToken{
 		UserID:   user.ID,
 		LoginWay: models.LoginByEmail,
@@ -70,7 +70,7 @@ func GenerateLoginToken(user models.User, db *gorm.DB, identify string, subject 
 
 	now := helpers.NowTime()
 	claims := &jwt.StandardClaims{
-		Audience:  identify,
+		Audience:  user.Email,
 		ExpiresAt: now.Add(time.Duration(config.LoginAuth.Expire) * time.Second).Unix(),
 		Issuer:    "System",
 		IssuedAt:  now.Unix(),

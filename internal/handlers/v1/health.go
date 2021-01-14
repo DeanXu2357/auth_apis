@@ -1,9 +1,10 @@
 package handlers_v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"auth/internal/helpers"
+	"github.com/gin-gonic/gin"
+)
 
 func Health(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "OK",
-	})
+	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
 }
