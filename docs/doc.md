@@ -86,7 +86,7 @@
 * [ ] coverage file output
 * [ ] test verify api
 * [ ] verify token middleware
-* [ ] refresh token api 
+* [x] refresh token api 
 * [ ] recovery password api
 * [ ] reset password api 
 * [ ] research for line bot login

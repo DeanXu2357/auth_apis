@@ -44,3 +44,15 @@
 |created_at|timestamp| | | | |
 |updated_at|timestamp| | | | |
 
+* images
+
+|name|type|length|default|index|comment|
+|---:|---:|---:|---:|---:|---:|
+|id|bigint| | |PK|auto_increment|
+|access_url|varchar(256)|256 | | | access resource path|
+|bucket_name|varchar(32)|32| | | |
+|bucket_vendor|varchar(16)|16| | | |
+|file_name|varchar(32)|32| | | |
+|ext|varchar(8)|8| | | |
+|user_id|uuid| | |foreign key| |
+|status| smallint|2| | | 0:get_presign_url, 1:uploaded, 2:resized|
