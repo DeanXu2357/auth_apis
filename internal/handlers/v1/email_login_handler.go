@@ -170,7 +170,7 @@ func RefreshToken(c *gin.Context) {
 		}
 	}
 
-	if authToken.Revoked == false {
+	if authToken.IsRevoked() {
 		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": "token_revoked"})
 		return
 	}
@@ -205,7 +205,7 @@ func RefreshToken(c *gin.Context) {
 	}
 
 	// revoke old token
-	if err = db.Model(&authToken).Updates(models.AuthToken{Revoked: models.RevokedTrue}).Error; err != nil {
+	if err = authToken.DoRevoked(tx); err != nil {
 		tx.Rollback()
 		helpers.GenerateResponse(c, helpers.ReturnInternalError, map[string]string{"detail": err.Error()})
 		return

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth/internal/cmd/migration"
 	"auth/internal/cmd/sending_email"
 	"auth/internal/config"
 	"auth/internal/events"
@@ -35,6 +36,7 @@ func main() {
 	rootCmd.AddCommand(sending_email.GenerateCommand())
 	rootCmd.AddCommand(generateTestCmd())
 	rootCmd.AddCommand(serveCmd)
+	rootCmd.AddCommand(migration.GenerateCommand())
 
 	err := rootCmd.Execute()
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"auth/internal/models"
 	"auth/internal/routes"
 	"auth/internal/services"
+	"auth/lib/assertion"
 	"auth/lib/database"
 	"auth/lib/event_listener"
 	"auth/lib/factory"
@@ -39,6 +40,10 @@ func Test_RefreshLoginTokenSuccess(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
+	firstAuthToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
+	if err != nil {
+		t.Error(err.Error())
+	}
 
 	// Act
 	req, _ := http.NewRequest("POST", "/api/v1/refresh", strings.NewReader(""))
@@ -49,20 +54,21 @@ func Test_RefreshLoginTokenSuccess(t *testing.T) {
 	// Assert
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "ok")
-	var rsp struct{
+	var rspDecode struct{
 		Items struct{Token string `json:"token"`} `json:"items"`
 		Msg string `json:"msg"`
 		Status int `json:"status"`
 	}
-	if err := json.Unmarshal(w.Body.Bytes(), &rsp) ;err != nil{
+	if err := json.Unmarshal(w.Body.Bytes(), &rspDecode) ;err != nil{
 		t.Error(err.Error())
 	}
-	assert.NotNil(t, rsp)
-	at, err := services.DecodeLoginToken(rsp.Items.Token, db.Session(&gorm.Session{NewDB: true}))
+	assert.NotNil(t, rspDecode)
+	at, err := services.DecodeLoginToken(rspDecode.Items.Token, db.Session(&gorm.Session{NewDB: true}))
 	if err != nil {
 		t.Error(err.Error())
 	}
 	assert.NotNil(t, at)
+	assertion.DatabaseHas(t, &models.AuthToken{}, map[string]interface{}{"id": firstAuthToken.ID, "revoked": models.RevokedTrue}, db.Session(&gorm.Session{NewDB: true}))
 }
 
 // refresh failed, due to refresh limit

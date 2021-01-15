@@ -36,3 +36,11 @@ func (m *AuthToken) BeforeCreate(tx *gorm.DB) (err error) {
 	m.ID = uuid.NewV4()
 	return
 }
+
+func (m *AuthToken) IsRevoked() bool {
+	return m.Revoked == true
+}
+
+func (m *AuthToken) DoRevoked(db *gorm.DB) error {
+	return db.Model(m).Updates(AuthToken{Revoked: RevokedTrue}).Error
+}
