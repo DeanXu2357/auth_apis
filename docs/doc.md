@@ -72,10 +72,10 @@
     * [ ] Add setting options for run mode
     * [x] Document flow and new schema
     * [x] Redesign database schema
-    * [ ] add migration command
-        - [ ] up
-        - [ ] down
-        - [ ] create
+    * [x] add migration command
+        - [x] up
+        - [x] down
+        - [x] create
 * [ ] DevOpts About
     - [ ] design ci/cd flow
     - [ ] write k8s yaml
@@ -98,7 +98,6 @@
     2. add grpc support
     3. swagger
     4. open tracing support
-    5. add migration command and fix README.md about initial project
     
 * DevOpts
     1. design ci/cd flow

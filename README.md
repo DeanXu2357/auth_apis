@@ -1,29 +1,31 @@
-# Api 練習 -- 登入微服務
-## 啟動專案
-* 初次啟動  
+# Api practice -- login service
+## Start project
+* initial  
 `sudo docker-compose up -d`
-* 變更後重新編譯  
+* do migration  
+`sudo docker-compose exec app go run main.go migrate up`
+* refresh dev environment 
 `sudo docker-compose exec app go build -o main && sudo docker-compose restart  app`
-* Run test (因為與資料庫做整合測試，在 refresh db 時不鎖定 parallel 會出問題)
+* Run test (since integration tests, refresh db not set parallel 1 will crash)  
 `go test -p 1 ./...`
 
 ## Commands
 * `./main serve`
 * `./main work:email`
-* `./main migrate`
-* `./main migrate:rollback [steps, default all]` 
-* `./main migrate:refresh`
-* `./main migrate:make [make params]`
+* `./main migrate up`
+* `./main migrate refresh`
+* `./main migrate down [steps, default all]` 
+* `./main migrate make [make params]`
 
 ## About Migrate  
 `https://github.com/golang-migrate/migrate/tree/master/cmd/migrate`
-* migrate from local 
+* migrate from local   
 `./cmd/migrate.linux-amd64 -database "postgres://postgres:fortestpwd@localhost:45487/auth?sslmode=disable" -verbose -path db/migrations up`
 
 ## generate key and secret 
-* ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
-* openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
-* copy and paste to config.yml
+`ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key`  
+`openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub`  
+`copy and paste to config.yml`
 
 ## Q&A
 
