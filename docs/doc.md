@@ -98,6 +98,9 @@
     2. add grpc support
     3. swagger
     4. open tracing support
+    5. doc
+        - README.md add how to setting config.yml
+    6. config modify take effect in realtime (viper, section)
     
 * DevOpts
     1. design ci/cd flow
