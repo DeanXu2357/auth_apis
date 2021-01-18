@@ -9,6 +9,7 @@ var (
 	LoginAuth     LoginAuthSettings
 	ActivateAuth  ActivateAuthSettings
 	EventListener EventListenerSettings
+	Tracer        TracerSettings
 )
 
 func init() {
@@ -19,6 +20,10 @@ func init() {
 	}
 
 	if err := viper.UnmarshalKey("login_auth", &LoginAuth); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := viper.UnmarshalKey("tracer", &Tracer); err != nil {
 		log.Fatal(err)
 	}
 

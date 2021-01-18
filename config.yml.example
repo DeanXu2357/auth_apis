@@ -41,3 +41,7 @@ queue:
   mail_queue:
     redis_db: 0
     worker_count: 2
+
+tracer:
+  host: tracing
+  port: 6832
