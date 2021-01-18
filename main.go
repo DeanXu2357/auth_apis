@@ -1,7 +1,7 @@
 package main
 
 import (
-	"auth/internal/cmd/internal/test_cmd"
+	"auth/internal/cmd/test_cmd"
 	"auth/internal/cmd/migration"
 	"auth/internal/cmd/sending_email"
 	"auth/internal/config"
