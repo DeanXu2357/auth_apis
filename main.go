@@ -1,11 +1,11 @@
 package main
 
 import (
-	"auth/internal/cmd/test_cmd"
 	"auth/internal/cmd/migration"
 	"auth/internal/cmd/sending_email"
+	"auth/internal/cmd/server"
+	"auth/internal/cmd/test_cmd"
 	"auth/internal/config"
-	"auth/internal/server"
 	"github.com/spf13/cobra"
 	"log"
 )

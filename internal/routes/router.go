@@ -1,17 +1,17 @@
 package routes
 
 import (
+	"auth/internal"
 	handlerV1 "auth/internal/handlers/v1"
 	"auth/internal/middlewares"
-	"auth/lib/event_listener"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func InitRouter(db *gorm.DB, d *event_listener.Dispatcher) *gin.Engine {
+func InitRouter(s application.Application) *gin.Engine {
 	r := gin.Default()
-	r.Use(middlewares.SetDB(db))
-	r.Use(middlewares.SetEventListener(d))
+	r.Use(middlewares.SetDB(s.DB.Session(&gorm.Session{NewDB: true})))
+	r.Use(middlewares.SetEventListener(s.Dispatcher))
 
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")

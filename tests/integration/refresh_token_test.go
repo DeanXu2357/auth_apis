@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"auth/internal"
 	"auth/internal/config"
 	"auth/internal/models"
 	"auth/internal/routes"
@@ -26,7 +27,7 @@ func Test_RefreshLoginTokenSuccess(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
 	db := database.InitialDatabase()
-	router := routes.InitRouter(db, event_listener.NewDispatcher())
+	router := routes.InitRouter(application.Application{DB: db, Dispatcher: event_listener.NewDispatcher()})
 
 	// Arrange
 	users := factory.Create(
@@ -54,12 +55,14 @@ func Test_RefreshLoginTokenSuccess(t *testing.T) {
 	// Assert
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "ok")
-	var rspDecode struct{
-		Items struct{Token string `json:"token"`} `json:"items"`
-		Msg string `json:"msg"`
-		Status int `json:"status"`
+	var rspDecode struct {
+		Items struct {
+			Token string `json:"token"`
+		} `json:"items"`
+		Msg    string `json:"msg"`
+		Status int    `json:"status"`
 	}
-	if err := json.Unmarshal(w.Body.Bytes(), &rspDecode) ;err != nil{
+	if err := json.Unmarshal(w.Body.Bytes(), &rspDecode); err != nil {
 		t.Error(err.Error())
 	}
 	assert.NotNil(t, rspDecode)

@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"auth/internal"
 	"auth/internal/config"
 	"auth/internal/models"
 	"auth/internal/routes"
@@ -20,7 +21,7 @@ func Test_Health(t *testing.T) {
 	tests.RefreshDatabase()
 	db := database.InitialDatabase()
 	dispatcher := event_listener.NewDispatcher()
-	router := routes.InitRouter(db, dispatcher)
+	router := routes.InitRouter(application.Application{DB: db, Dispatcher: dispatcher})
 
 	w := tests.Call(router, "GET", "/api/v1/health", "")
 
@@ -33,7 +34,7 @@ func Test_RegisterByEmailSuccess(t *testing.T) {
 	tests.RefreshDatabase()
 	db := database.InitialDatabase()
 	dispatcher := event_listener.NewDispatcher()
-	router := routes.InitRouter(db, dispatcher)
+	router := routes.InitRouter(application.Application{DB: db, Dispatcher: dispatcher})
 
 	name := "poyu"
 	email := "dean.dh@gmail.com"

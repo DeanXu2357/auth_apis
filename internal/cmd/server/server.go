@@ -1,19 +1,18 @@
 package server
 
 import (
+	"auth/internal"
 	"auth/internal/events"
 	"auth/internal/listeners"
 	"auth/internal/routes"
 	"auth/lib/database"
 	"auth/lib/event_listener"
 	log2 "auth/lib/log"
-	myTracer "auth/lib/tracer"
+	//myTracer "auth/lib/tracer"
 	"context"
 	"fmt"
-	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
@@ -21,12 +20,6 @@ import (
 	"syscall"
 	"time"
 )
-
-type Application struct {
-	DB         *gorm.DB
-	dispatcher *event_listener.Dispatcher
-	Tracer     opentracing.Tracer
-}
 
 func GenerateServerCmd() *cobra.Command {
 	return &cobra.Command{
@@ -44,7 +37,9 @@ func GenerateServerCmd() *cobra.Command {
 			//	log.Fatal(err)
 			//}
 
-			runServer(db, dispatcher)
+			server := application.Application{DB: db, Dispatcher: dispatcher}
+
+			runServer(server)
 
 			defer func() {
 				log.Print("After shutdown server, close other objects")
@@ -54,14 +49,14 @@ func GenerateServerCmd() *cobra.Command {
 				if err != nil {
 					log.Fatal(err)
 				}
-				tracerCloser.Close()
+				//tracerCloser.Close()
 			}()
 		},
 	}
 }
 
-func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
-	router := routes.InitRouter(db, dispatcher)
+func runServer(s application.Application) {
+	router := routes.InitRouter(s)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%v", viper.Get("server_port")),
@@ -80,7 +75,7 @@ func runServer(db *gorm.DB, dispatcher *event_listener.Dispatcher) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown: ", err)
