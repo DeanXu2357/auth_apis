@@ -1,7 +1,7 @@
 package tracer
 
 import (
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go/config"
 	"io"
 	"time"
@@ -18,6 +18,7 @@ func NewJaegerTracer(serviceName, agentHostPort string) (opentracing.Tracer, io.
 			LogSpans: true,
 			BufferFlushInterval: 1 * time.Second,
 			LocalAgentHostPort: agentHostPort,
+			//CollectorEndpoint: "tracing:9411",
 		},
 	}
 

@@ -2,13 +2,14 @@ package server
 
 import (
 	"auth/internal"
+	"auth/internal/config"
 	"auth/internal/events"
 	"auth/internal/listeners"
 	"auth/internal/routes"
 	"auth/lib/database"
 	"auth/lib/event_listener"
 	log2 "auth/lib/log"
-	//myTracer "auth/lib/tracer"
+	myTracer "auth/lib/tracer"
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -32,14 +33,15 @@ func GenerateServerCmd() *cobra.Command {
 			dispatcher.AttachListener(events.EmailRegistered, listeners.SendMailListener{})
 			dispatcher.Consume()
 
-			//tracer, tracerCloser, err := myTracer.NewJaegerTracer()
-			//if err != nil {
-			//	log.Fatal(err)
-			//}
+			tracer, tracerCloser, err := myTracer.NewJaegerTracer(
+				viper.GetString("app_name"),
+				fmt.Sprintf("%s:%d", config.Tracer.Host, config.Tracer.Port),
+			)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-			server := application.Application{DB: db, Dispatcher: dispatcher}
-
-			runServer(server)
+			runServer(application.Application{DB: db, Dispatcher: dispatcher, Tracer: tracer})
 
 			defer func() {
 				log.Print("After shutdown server, close other objects")
@@ -49,7 +51,7 @@ func GenerateServerCmd() *cobra.Command {
 				if err != nil {
 					log.Fatal(err)
 				}
-				//tracerCloser.Close()
+				tracerCloser.Close()
 			}()
 		},
 	}

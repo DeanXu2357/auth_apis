@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"auth/internal/helpers"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
@@ -9,7 +8,7 @@ import (
 	"github.com/uber/jaeger-client-go"
 )
 
-func Tracing(c *gin.Context) gin.HandlerFunc {
+func Tracing(tracer opentracing.Tracer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var newCtx context.Context
 		var span opentracing.Span
@@ -20,13 +19,13 @@ func Tracing(c *gin.Context) gin.HandlerFunc {
 		if err != nil {
 			span, newCtx = opentracing.StartSpanFromContextWithTracer(
 				c.Request.Context(),
-				helpers.GetTracer(c),
+				tracer,
 				c.Request.URL.Path,
 			)
 		} else {
 			span, newCtx = opentracing.StartSpanFromContextWithTracer(
 				c.Request.Context(),
-				helpers.GetTracer(c),
+				tracer,
 				c.Request.URL.Path,
 				opentracing.ChildOf(spanCtx),
 				opentracing.Tag{Key: string(ext.Component), Value: "HTTP"},

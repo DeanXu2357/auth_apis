@@ -1,10 +1,13 @@
 # Api practice -- login service
 ## Start project
-* initial  
+1. initial  
 `sudo docker-compose up -d`
-* do migration  
+2. do migration  
 `sudo docker-compose exec app go run main.go migrate up`
-* refresh dev environment 
+3. copy config  
+`cp config.yml.example config.yml`
+
+* refresh dev environment   
 `sudo docker-compose exec app go build -o main && sudo docker-compose restart  app`
 * Run test (since integration tests, refresh db not set parallel 1 will crash)  
 `go test -p 1 ./...`
