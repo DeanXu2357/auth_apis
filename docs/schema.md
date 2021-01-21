@@ -4,7 +4,7 @@
 
 |name|type|length|default|index|comment|
 |---:|---:|---:|---:|---:|---:|
-|id|string|32|N|PK|uuid v4 generate by `{root}/models/users`|
+|id|string|32|N|PK|uuid v4 generate by `{root}/internal/models/users`|
 |email|string|128|N|UNIQUE||
 |name|string|50|''|||
 |created_at|timestamp|||||
