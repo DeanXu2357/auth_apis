@@ -43,5 +43,7 @@ queue:
     worker_count: 2
 
 tracer:
-  host: tracing
-  port: 6832
+  agent_host: tracing
+  agent_port: 6831
+  sampler_host: tracing
+  sampler_post: 5778

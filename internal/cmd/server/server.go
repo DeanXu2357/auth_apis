@@ -35,7 +35,8 @@ func GenerateServerCmd() *cobra.Command {
 
 			tracer, tracerCloser, err := myTracer.NewJaegerTracer(
 				viper.GetString("app_name"),
-				fmt.Sprintf("%s:%d", config.Tracer.Host, config.Tracer.Port),
+				fmt.Sprintf("%s:%d", config.Tracer.AgentHost, config.Tracer.AgentPort),
+				fmt.Sprintf("%s:%d", config.Tracer.SamplerHost, config.Tracer.SamplerPort),
 			)
 			if err != nil {
 				log.Fatal(err)

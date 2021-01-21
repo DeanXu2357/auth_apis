@@ -1,6 +1,8 @@
 package config
 
 type TracerSettings struct {
-	Host string
-	Port int
+	AgentHost   string `mapstructure:"agent_host"`
+	AgentPort   int    `mapstructure:"agent_port"`
+	SamplerHost string `mapstructure:"sampler_host"`
+	SamplerPort int    `mapstructure:"sampler_port"`
 }

@@ -7,18 +7,18 @@ import (
 	"time"
 )
 
-func NewJaegerTracer(serviceName, agentHostPort string) (opentracing.Tracer, io.Closer, error) {
+func NewJaegerTracer(serviceName, agentHostPort, samplerHostPort string) (opentracing.Tracer, io.Closer, error) {
 	cfg := &config.Configuration{
 		ServiceName: serviceName,
 		Sampler: &config.SamplerConfig{
-			Type: "const",
-			Param: 1,
+			Type:              "remote",
+			Param:             1,
+			SamplingServerURL: samplerHostPort,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans: true,
+			LogSpans:            true,
 			BufferFlushInterval: 1 * time.Second,
-			LocalAgentHostPort: agentHostPort,
-			//CollectorEndpoint: "tracing:9411",
+			LocalAgentHostPort:  agentHostPort,
 		},
 	}
 
@@ -29,4 +29,3 @@ func NewJaegerTracer(serviceName, agentHostPort string) (opentracing.Tracer, io.
 	opentracing.SetGlobalTracer(tracer)
 	return tracer, closer, nil
 }
-
