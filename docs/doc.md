@@ -85,7 +85,7 @@
 * [ ] Standardize log format, wait for select a library
 * [ ] coverage file output
 * [ ] test verify api
-* [ ] verify token middleware
+* [x] verify token middleware
 * [x] refresh token api
 * [ ] recovery password api
 * [ ] reset password api
@@ -93,13 +93,13 @@
 
 ### Execution sequence
 * Normal
-    1. finish basic apis and test
-        * pic upload and localstack
-    2. add grpc support
-    3. swagger
-    4. doc
-        - README.md add how to setting config.yml
-    5. modify config to take effect in realtime (viper, section)
+    1. add opentracing integration with gorm
+    2. swagger
+    3. finish basic apis and test
+       * pic upload and localstack
+    4. modify config to take effect in realtime (viper, section)
+    5. improve speed of initial container
+    6. add grpc support
 
 * DevOpts
     1. design ci/cd flow
