@@ -37,7 +37,7 @@ func Tracing(tracer opentracing.Tracer) gin.HandlerFunc {
 		spanContext := span.Context()
 		switch spanContext.(type) {
 		case jaeger.SpanContext:
-			jaegerContext:=spanContext.(jaeger.SpanContext)
+			jaegerContext := spanContext.(jaeger.SpanContext)
 			traceID = jaegerContext.TraceID().String()
 			spanID = jaegerContext.SpanID().String()
 		}

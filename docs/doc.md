@@ -97,7 +97,8 @@
     2. swagger
     3. finish basic apis and test
        * pic upload and localstack
-    4. modify config to take effect in realtime (viper, section)
+    4. ~~modify config to take effect in realtime (viper, watch section)  
+        need to think twice about this feature~~
     5. improve speed of initial container
     6. add grpc support
 
