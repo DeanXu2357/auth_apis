@@ -8,8 +8,13 @@ import (
 	"github.com/uber/jaeger-client-go"
 )
 
-func Tracing(tracer opentracing.Tracer) gin.HandlerFunc {
+func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if opentracing.GlobalTracer() == nil {
+			c.Next()
+			return
+		}
+
 		var newCtx context.Context
 		var span opentracing.Span
 		spanCtx, err := opentracing.GlobalTracer().Extract(
@@ -17,15 +22,13 @@ func Tracing(tracer opentracing.Tracer) gin.HandlerFunc {
 			opentracing.HTTPHeadersCarrier(c.Request.Header),
 		)
 		if err != nil {
-			span, newCtx = opentracing.StartSpanFromContextWithTracer(
+			span, newCtx = opentracing.StartSpanFromContext(
 				c.Request.Context(),
-				tracer,
 				c.Request.URL.Path,
 			)
 		} else {
-			span, newCtx = opentracing.StartSpanFromContextWithTracer(
+			span, newCtx = opentracing.StartSpanFromContext(
 				c.Request.Context(),
-				tracer,
 				c.Request.URL.Path,
 				opentracing.ChildOf(spanCtx),
 				opentracing.Tag{Key: string(ext.Component), Value: "HTTP"},

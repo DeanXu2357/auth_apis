@@ -27,7 +27,8 @@ func GenerateServerCmd() *cobra.Command {
 		Use:   "serve",
 		Short: "run server",
 		Run: func(cmd *cobra.Command, args []string) {
-			db := database.InitialDatabase()
+			db := database.NewDBEngine()
+			db.Use(&database.OpentracingPlugin{})
 
 			dispatcher := event_listener.NewDispatcher()
 			dispatcher.AttachListener(events.EmailRegistered, listeners.SendMailListener{})
