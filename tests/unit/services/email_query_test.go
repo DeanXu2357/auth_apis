@@ -22,7 +22,7 @@ func Test_LoginNotFound(t *testing.T) {
 	tests.RefreshDatabase()
 
 	// Initial
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	// act
 	_, err := services.FindEmailLogin("test@gmail.com", db.Session(&gorm.Session{NewDB: true}))
@@ -39,7 +39,7 @@ func Test_LoginNotVerifiedYet(t *testing.T) {
 	tests.RefreshDatabase()
 
 	// Initial
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	// arrange
 	u, l, _ := createFakeUserWithEmailLogin(
@@ -65,7 +65,7 @@ func Test_GetLoginSuccess(t *testing.T) {
 	tests.RefreshDatabase()
 
 	// Initial
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	// arrange
 	u, l, _ := createFakeUserWithEmailLogin(

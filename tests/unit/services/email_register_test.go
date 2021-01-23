@@ -14,7 +14,7 @@ import (
 func Test_RegisterSuccess(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	name := "poyu"
 	email := "dean.dh@gmail.com"

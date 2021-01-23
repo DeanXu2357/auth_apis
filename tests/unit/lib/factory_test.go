@@ -24,7 +24,7 @@ func Test_FactoryGenerate(t *testing.T) {
 func Test_FactoryCreateOne(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	name := "dean"
 	fakeUsers := factory.Create(db, &models.User{}, map[string]interface{}{"Name": name}, 1)

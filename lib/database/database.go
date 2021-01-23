@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func InitialDatabase() *gorm.DB {
+func NewDBEngine() *gorm.DB {
 	dbInfo := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		viper.GetString("db_host"),

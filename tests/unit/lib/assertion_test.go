@@ -12,7 +12,7 @@ import (
 func Test_DatabaseHas(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 
 	mockT := new(testing.T)
 

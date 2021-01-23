@@ -27,7 +27,7 @@ func Test_GenerateActionToken(t *testing.T) {
 	tests.RefreshDatabase()
 
 	// Initial
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 	config.ActivateAuth = config.ActivateAuthSettings{PrivateKey: testPrivateKey, PublicKey: testPublicKey, Expire: 360}
 
 	// Arrange
@@ -59,7 +59,7 @@ func Test_ActivateSuccess(t *testing.T) {
 	tests.RefreshDatabase()
 
 	// Initial
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 	config.ActivateAuth = config.ActivateAuthSettings{PrivateKey: testPrivateKey, PublicKey: testPublicKey, Expire: 360}
 
 	// Arrange
