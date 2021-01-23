@@ -12,6 +12,10 @@
 * Run test (since integration tests, refresh db not set parallel 1 will crash)  
 `go test -p 1 ./...`
 
+## Tools
+* Jaeger UI  
+`http://localhost:16686`
+
 ## Commands
 * `./main serve`
 * `./main work:email`
