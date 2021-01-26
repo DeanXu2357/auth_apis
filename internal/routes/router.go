@@ -10,12 +10,9 @@ import (
 
 func InitRouter(s application.Application) *gin.Engine {
 	r := gin.Default()
+	r.Use(middlewares.Tracing())
 	r.Use(middlewares.SetDB(s.DB.Session(&gorm.Session{NewDB: true})))
 	r.Use(middlewares.SetEventListener(s.Dispatcher))
-	if s.Tracer != nil {
-		r.Use(middlewares.Tracing(s.Tracer))
-	}
-
 
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")

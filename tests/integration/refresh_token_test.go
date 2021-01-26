@@ -26,7 +26,7 @@ func Test_RefreshLoginTokenSuccess(t *testing.T) {
 	// Setup & Initial
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 	router := routes.InitRouter(application.Application{DB: db, Dispatcher: event_listener.NewDispatcher()})
 
 	// Arrange

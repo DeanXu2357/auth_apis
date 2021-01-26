@@ -19,7 +19,7 @@ import (
 func Test_Health(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 	dispatcher := event_listener.NewDispatcher()
 	router := routes.InitRouter(application.Application{DB: db, Dispatcher: dispatcher})
 
@@ -32,7 +32,7 @@ func Test_Health(t *testing.T) {
 func Test_RegisterByEmailSuccess(t *testing.T) {
 	config.InitialConfigurations()
 	tests.RefreshDatabase()
-	db := database.InitialDatabase()
+	db := database.NewDBEngine()
 	dispatcher := event_listener.NewDispatcher()
 	router := routes.InitRouter(application.Application{DB: db, Dispatcher: dispatcher})
 
