@@ -7,25 +7,32 @@ import (
 )
 
 type Response struct {
-	status int
-	msg    string
-	http   int
+	Http    int
+	Content ResponseContent
+}
+
+// ResponseContent example
+type ResponseContent struct {
+	Status int         `json:"status" example:"200"`
+	Msg    string      `json:"msg" example:"ok"`
+	Items  interface{} `json:"items"`
 }
 
 var (
-	ReturnOK               = Response{status: 200, msg: "ok", http: http.StatusOK}
-	ReturnBadRequest       = Response{status: 40000, msg: "bad request", http: http.StatusBadRequest}
-	ReturnInvalidToken     = Response{status: 40101, msg: "Invalid token", http: http.StatusUnauthorized}
-	ReturnTokenExpire      = Response{status: 40102, msg: "Expired token", http: http.StatusUnauthorized}
-	ReturnValidationFailed = Response{status: 40022, msg: "Validation failed", http: http.StatusBadRequest}
-	ReturnResourceNotFound = Response{status: 404, msg: "Resource not found", http: http.StatusNotFound}
-	ReturnNotExist         = Response{status: 40004, msg: "Target not exist", http: http.StatusBadRequest}
-	ReturnDuplicate        = Response{status: 40009, msg: "Already exists", http: http.StatusBadRequest}
-	ReturnInternalError    = Response{status: 500, msg: "Internal error", http: http.StatusInternalServerError}
+	ReturnOK               = Response{Http: http.StatusOK, Content: ResponseContent{Status: 200, Msg: "ok"}}
+	ReturnBadRequest       = Response{Http: http.StatusBadRequest, Content: ResponseContent{Status: 40000, Msg: "bad request"}}
+	ReturnInvalidToken     = Response{Http: http.StatusUnauthorized, Content: ResponseContent{Status: 40101, Msg: "Invalid token"}}
+	ReturnTokenExpire      = Response{Http: http.StatusUnauthorized, Content: ResponseContent{Status: 40102, Msg: "Expired token"}}
+	ReturnValidationFailed = Response{Http: http.StatusBadRequest, Content: ResponseContent{Status: 40022, Msg: "Validation failed"}}
+	ReturnResourceNotFound = Response{Http: http.StatusNotFound, Content: ResponseContent{Status: 404, Msg: "Resource not found"}}
+	ReturnNotExist         = Response{Http: http.StatusBadRequest, Content: ResponseContent{Status: 40004, Msg: "Target not exist"}}
+	ReturnDuplicate        = Response{Http: http.StatusBadRequest, Content: ResponseContent{Status: 40009, Msg: "Already exists"}}
+	ReturnInternalError    = Response{Http: http.StatusInternalServerError, Content: ResponseContent{Status: 500, Msg: "Internal error"}}
 )
 
 func GenerateResponse(c *gin.Context, r Response, items interface{}) {
-	c.JSON(r.http, gin.H{"status": r.status, "msg": r.msg, "items": items})
+	r.Content.Items = items
+	c.JSON(r.Http, r.Content)
 }
 
 func GeneratePagination(c *gin.Context, items interface{}, total int) {

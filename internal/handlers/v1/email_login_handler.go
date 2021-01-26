@@ -16,6 +16,19 @@ import (
 	"time"
 )
 
+// RegisterByMail godoc
+// @Summary Register an account by email
+// @Description Using email to register an account
+// @Tags E-mail
+// @Accept  json
+// @Produce  json
+// @Param name body string true "User name wants to register"
+// @Param email body string true "User email"
+// @Param password body string true "User password"
+// @Success 200 {string}  {"status":200, msg:"ok"}
+// @Failure 400,404
+// @Failure 500
+// @Router /api/v1/email/register [post]
 func RegisterByMail(c *gin.Context) {
 	var input struct {
 		Name     string `json:"name" binding:"required"`

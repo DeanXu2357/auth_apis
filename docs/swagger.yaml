@@ -1,0 +1,46 @@
+info:
+  contact: {}
+paths:
+  /api/v1/email/register:
+    post:
+      consumes:
+      - application/json
+      description: Using email to register an account
+      parameters:
+      - description: User name wants to register
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: User email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: User password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status":200, msg:"ok"}
+          schema:
+            type: string
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+        default:
+          description: ""
+      summary: Register an account by email
+      tags:
+      - E-mail
+swagger: "2.0"
