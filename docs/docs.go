@@ -24,6 +24,45 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/email/activate": {
+            "get": {
+                "description": "activate email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "E-mail"
+                ],
+                "summary": "activate email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\":200, \"msg\":ok}",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
+                    },
+                    "400": {
+                        "description": "40022:validation failed , 40102: token expired, 40101: unknown token invalid error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/email/register": {
             "post": {
                 "description": "Using email to register an account",
@@ -109,6 +148,64 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/api/v1/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get user profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\":200, \"msg\":ok}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.ResponseContent"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "$ref": "#/definitions/models.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "40000: invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -164,6 +261,29 @@ var doc = `{
                 "status": {
                     "type": "integer",
                     "example": 200
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         }

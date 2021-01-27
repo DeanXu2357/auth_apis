@@ -114,7 +114,7 @@ func runServer(s application.Application) {
 	docs.SwaggerInfo.Version = config.Swagger.Version
 	docs.SwaggerInfo.Host = config.Swagger.Host
 	docs.SwaggerInfo.BasePath = config.Swagger.BasePath
-	docs.SwaggerInfo.Schemes = []string{"http"}
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	router := routes.InitRouter(s)
 

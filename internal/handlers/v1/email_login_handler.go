@@ -108,7 +108,7 @@ func VerifyMailLogin(c *gin.Context) {
 }
 
 type ActivateEmailInput struct {
-	Token string `json:"token"`
+	Token string `form:"token"`
 }
 
 // ActivateEmail godoc
@@ -121,11 +121,11 @@ type ActivateEmailInput struct {
 // @Success 200 {object} helpers.ResponseContent string "{"status":200, "msg":ok}"
 // @Failure 400 {object} helpers.ResponseContent string "40022:validation failed , 40102: token expired, 40101: unknown token invalid error"
 // @Failure 500
-// @Router /api/v1/email/verify [get]
+// @Router /api/v1/email/activate [get]
 func ActivateEmail(c *gin.Context) {
 	var input ActivateEmailInput
 	if err := c.ShouldBindQuery(&input); err != nil {
-		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, nil)
+		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": err.Error()})
 		return
 	}
 
@@ -133,17 +133,17 @@ func ActivateEmail(c *gin.Context) {
 
 	if err := services.Activate(input.Token, db); err != nil {
 		if errors.Is(err, services.ErrorTokenNotValidYet) {
-			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
+			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, map[string]string{"detail": err.Error()})
 			return
 		} else if errors.Is(err, services.ErrorTokenExpired) {
-			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, err)
+			helpers.GenerateResponse(c, helpers.ReturnTokenExpire, map[string]string{"detail": err.Error()})
 			return
 		} else if errors.Is(err, services.ErrorTokenMalformed) {
-			helpers.GenerateResponse(c, helpers.ReturnValidationFailed, err)
+			helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": err.Error()})
 			return
 		}
 
-		helpers.GenerateResponse(c, helpers.ReturnInvalidToken, err)
+		helpers.GenerateResponse(c, helpers.ReturnInvalidToken, map[string]string{"detail": err.Error()})
 		return
 	}
 

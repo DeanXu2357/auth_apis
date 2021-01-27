@@ -9,13 +9,15 @@
 
 * refresh code   
 `sudo docker-compose restart  app`
+* refresh swagger  
+`sudo docker-compose exec app swag init`
 * Run test (since integration tests, refresh db not set parallel 1 will crash)  
 `go test -p 1 ./...`
 
 ## Tools
 * Jaeger UI  
 `http://localhost:16686`
-* Swagger 
+* Swagger   
 `http://localhost:666/swagger/index.html`
 
 ## Commands

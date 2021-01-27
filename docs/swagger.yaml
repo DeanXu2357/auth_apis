@@ -38,9 +38,50 @@ definitions:
         example: 200
         type: integer
     type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /api/v1/email/activate:
+    get:
+      consumes:
+      - application/json
+      description: activate email
+      parameters:
+      - in: query
+        name: token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"status":200, "msg":ok}'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
+        "400":
+          description: '40022:validation failed , 40102: token expired, 40101: unknown
+            token invalid error'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
+        "500":
+          description: ""
+      summary: activate email
+      tags:
+      - E-mail
   /api/v1/email/register:
     post:
       consumes:
@@ -97,4 +138,38 @@ paths:
       summary: Get login token by email
       tags:
       - E-mail
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Get user profile
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"status":200, "msg":ok}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.ResponseContent'
+            - properties:
+                items:
+                  $ref: '#/definitions/models.User'
+              type: object
+        "400":
+          description: '40000: invalid token'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
+        "500":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: User profile
+      tags:
+      - User
 swagger: "2.0"
