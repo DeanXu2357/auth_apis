@@ -108,13 +108,12 @@ func GenerateServerCmd() *cobra.Command {
 }
 
 func runServer(s application.Application) {
-	// TODO : add to config
 	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "Authorization API Service"
-	docs.SwaggerInfo.Description = "This is a sample server User Authorization server."
-	docs.SwaggerInfo.Version = "0.1"
-	docs.SwaggerInfo.Host = "localhost:666"
-	docs.SwaggerInfo.BasePath = ""
+	docs.SwaggerInfo.Title = config.Swagger.Title
+	docs.SwaggerInfo.Description = config.Swagger.Description
+	docs.SwaggerInfo.Version = config.Swagger.Version
+	docs.SwaggerInfo.Host = config.Swagger.Host
+	docs.SwaggerInfo.BasePath = config.Swagger.BasePath
 	docs.SwaggerInfo.Schemes = []string{"http"}
 
 	router := routes.InitRouter(s)

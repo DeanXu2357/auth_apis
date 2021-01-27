@@ -47,3 +47,10 @@ tracer:
   agent_port: 6831
   sampler_host: tracing
   sampler_post: 5778
+
+swagger:
+  host: localhost:666
+  title: Authorization API Service
+  description: This is a sample server User Authorization server.
+  version: 0.1
+  base_path:

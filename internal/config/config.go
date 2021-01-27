@@ -10,6 +10,7 @@ var (
 	ActivateAuth  ActivateAuthSettings
 	EventListener EventListenerSettings
 	Tracer        TracerSettings
+	Swagger       SwaggerSettings
 )
 
 func init() {
@@ -28,6 +29,10 @@ func init() {
 	}
 
 	if err := viper.UnmarshalKey("event_listener", &EventListener); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := viper.UnmarshalKey("swagger", &Swagger); err != nil {
 		log.Fatal(err)
 	}
 }

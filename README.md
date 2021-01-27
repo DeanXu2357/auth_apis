@@ -15,6 +15,8 @@
 ## Tools
 * Jaeger UI  
 `http://localhost:16686`
+* Swagger 
+`http://localhost:666/swagger/index.html`
 
 ## Commands
 * `./main serve`
