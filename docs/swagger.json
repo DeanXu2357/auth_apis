@@ -19,52 +19,131 @@
                 "summary": "Register an account by email",
                 "parameters": [
                     {
-                        "description": "User name wants to register",
-                        "name": "name",
+                        "description": "User data",
+                        "name": "JSON",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "User email",
-                        "name": "email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "User password",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handlers_v1.RegisterByMailInput"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "status\":200, msg:\"ok\"}",
+                        "description": "{\"status\":200, \"msg\":ok}",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/helpers.ResponseContent"
                         }
                     },
                     "400": {
-                        "description": ""
-                    },
-                    "404": {
-                        "description": ""
+                        "description": "40022:validation failed, 400009: already registered",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
                     },
                     "500": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/email/verify": {
+            "post": {
+                "description": "Using email to receive a login token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "E-mail"
+                ],
+                "summary": "Get login token by email",
+                "parameters": [
+                    {
+                        "description": "login data",
+                        "name": "JSON",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers_v1.VerifyMailLoginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\":200, \"msg\":ok}",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
                     },
-                    "default": {
+                    "400": {
+                        "description": "40004:user not found, 40000: email not verified yet",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ResponseContent"
+                        }
+                    },
+                    "500": {
                         "description": ""
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers_v1.RegisterByMailInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "dean.test@gmail.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "dean"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "!AS$GK())"
+                }
+            }
+        },
+        "handlers_v1.VerifyMailLoginInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "dean.test@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "!AS$GK())"
+                }
+            }
+        },
+        "helpers.ResponseContent": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "ok"
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 200
                 }
             }
         }

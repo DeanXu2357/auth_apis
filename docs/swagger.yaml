@@ -1,3 +1,43 @@
+definitions:
+  handlers_v1.RegisterByMailInput:
+    properties:
+      email:
+        example: dean.test@gmail.com
+        type: string
+      name:
+        example: dean
+        type: string
+      password:
+        example: '!AS$GK())'
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  handlers_v1.VerifyMailLoginInput:
+    properties:
+      email:
+        example: dean.test@gmail.com
+        type: string
+      password:
+        example: '!AS$GK())'
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  helpers.ResponseContent:
+    properties:
+      items:
+        type: object
+      msg:
+        example: ok
+        type: string
+      status:
+        example: 200
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -7,40 +47,54 @@ paths:
       - application/json
       description: Using email to register an account
       parameters:
-      - description: User name wants to register
+      - description: User data
         in: body
-        name: name
+        name: JSON
         required: true
         schema:
-          type: string
-      - description: User email
-        in: body
-        name: email
-        required: true
-        schema:
-          type: string
-      - description: User password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/handlers_v1.RegisterByMailInput'
       produces:
       - application/json
       responses:
         "200":
-          description: status":200, msg:"ok"}
+          description: '{"status":200, "msg":ok}'
           schema:
-            type: string
+            $ref: '#/definitions/helpers.ResponseContent'
         "400":
-          description: ""
-        "404":
-          description: ""
+          description: '40022:validation failed, 400009: already registered'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
         "500":
           description: ""
-        default:
-          description: ""
       summary: Register an account by email
+      tags:
+      - E-mail
+  /api/v1/email/verify:
+    post:
+      consumes:
+      - application/json
+      description: Using email to receive a login token
+      parameters:
+      - description: login data
+        in: body
+        name: JSON
+        required: true
+        schema:
+          $ref: '#/definitions/handlers_v1.VerifyMailLoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"status":200, "msg":ok}'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
+        "400":
+          description: '40004:user not found, 40000: email not verified yet'
+          schema:
+            $ref: '#/definitions/helpers.ResponseContent'
+        "500":
+          description: ""
+      summary: Get login token by email
       tags:
       - E-mail
 swagger: "2.0"

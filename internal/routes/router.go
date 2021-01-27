@@ -22,7 +22,7 @@ func InitRouter(s application.Application) *gin.Engine {
 		emails := v1.Group("/email")
 		emails.POST("/register", handlerV1.RegisterByMail)
 		emails.POST("/verify", handlerV1.VerifyMailLogin)
-		emails.GET("/activate", handlerV1.ActivateEmailRegister)
+		emails.GET("/activate", handlerV1.ActivateEmail)
 
 		// 未完成
 		//emails.POST("/recovery", handlerV1.RecoveryPassword)
