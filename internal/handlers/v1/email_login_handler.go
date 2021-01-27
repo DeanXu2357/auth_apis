@@ -1,7 +1,6 @@
 package handlers_v1
 
 import (
-	"auth/internal/config"
 	"auth/internal/events"
 	"auth/internal/helpers"
 	"auth/internal/models"
@@ -13,8 +12,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 type RegisterByMailInput struct {
@@ -195,65 +192,5 @@ func ShowResetPage(c *gin.Context) {
 
 func ResetPassword(c *gin.Context) {
 	helpers.GenerateResponse(c, helpers.ReturnOK, nil)
-	return
-}
-
-func RefreshToken(c *gin.Context) {
-	authHeader := c.GetHeader("Authorization")
-	tokenString := authHeader[len("Bearer "):]
-	db := helpers.GetDB(c)
-
-	authToken, err := services.DecodeLoginToken(tokenString, db.Session(&gorm.Session{NewDB: true}))
-	if err != nil {
-		if !errors.Is(err, services.ErrorTokenExpired) {
-			helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": err.Error()})
-			return
-		}
-	}
-
-	if authToken.IsRevoked() {
-		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": "token_revoked"})
-		return
-	}
-
-	// check if out of refresh limit
-	refreshExpire := authToken.CreatedAt.Add(time.Duration(config.LoginAuth.RefreshExpire) * time.Second)
-	if time.Now().After(refreshExpire) {
-		helpers.GenerateResponse(c, helpers.ReturnValidationFailed, map[string]string{"detail": "out_of_refresh_time"})
-		return
-	}
-
-	user := models.User{ID: authToken.UserID}
-	if err := db.First(&user).Error; err != nil {
-		helpers.GenerateResponse(c, helpers.ReturnNotExist, map[string]string{"detail": "user not exist"})
-		return
-	}
-
-	tx := db.Session(&gorm.Session{SkipDefaultTransaction: true, NewDB: true})
-	defer func() {
-		if r := recover(); r != nil {
-			log.Print(r.(error))
-			tx.Rollback()
-		}
-	}()
-
-	// generate new token
-	tokenString, err = services.GenerateLoginToken(user, tx, "refresh_token")
-	if err != nil {
-		tx.Rollback()
-		helpers.GenerateResponse(c, helpers.ReturnInternalError, map[string]string{"detail": err.Error()})
-		return
-	}
-
-	// revoke old token
-	if err = authToken.DoRevoked(tx); err != nil {
-		tx.Rollback()
-		helpers.GenerateResponse(c, helpers.ReturnInternalError, map[string]string{"detail": err.Error()})
-		return
-	}
-
-	tx.Commit()
-
-	helpers.GenerateResponse(c, helpers.ReturnOK, map[string]string{"token": tokenString})
 	return
 }
