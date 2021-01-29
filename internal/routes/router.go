@@ -8,11 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitRouter(s application.Application) *gin.Engine {
+func InitRouter(app application.Application) *gin.Engine {
 	r := gin.Default()
 	r.Use(middlewares.Tracing())
-	r.Use(middlewares.SetDB(s.DB.Session(&gorm.Session{NewDB: true})))
-	r.Use(middlewares.SetEventListener(s.Dispatcher))
+	r.Use(middlewares.SetDB(app.DB.Session(&gorm.Session{NewDB: true})))
+	r.Use(middlewares.SetEventListener(app.Dispatcher))
 
 	routes := r.Group("/api")
 	v1 := routes.Group("/v1")

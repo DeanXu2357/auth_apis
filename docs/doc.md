@@ -57,7 +57,6 @@
 
 ### Execution sequence
 * Normal
-    1. add opentracing integration with gorm
     2. finish basic apis and test
        * pic upload and localstack
     4. improve speed of initial container
