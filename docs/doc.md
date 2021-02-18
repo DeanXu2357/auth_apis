@@ -54,6 +54,8 @@
 * [ ] check test scopes cover range
 * [ ] add postgres ui
 * [ ] add create migration command
+* [ ] split swagger and api service, then using openapi 3.0
+* [ ] modify verify api to use Basic Authorization 
 
 ### Execution sequence
 * Normal
